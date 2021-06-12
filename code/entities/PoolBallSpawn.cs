@@ -10,10 +10,10 @@ namespace PoolGame
 	[Library( "pool_ball_spawn" )]
 	public partial class PoolBallSpawn : ModelEntity
 	{
-		[HammerProp]
+		[Property]
 		public PoolBallType Type { get; set; }
 
-		[HammerProp]
+		[Property]
 		public PoolBallNumber Number { get; set; }
 	}
 }

@@ -1,31 +1,95 @@
-@SolidClass = trigger_ball_pocket
+// 
+// PoolGame.Game : Sandbox.Game 
+// 
+@PointClass = pool : ""
 [
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
 ]
 
-@SolidClass = trigger_white_area
+// 
+// PoolGame.PoolBall : Sandbox.ModelEntity 
+// 
+@PointClass = pool_ball : ""
 [
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
 ]
 
-@PointClass editormodel( "models/pool/pool_ball.vmdl" ) = pool_ball_spawn
+// 
+// PoolGame.PoolBallSpawn : Sandbox.ModelEntity 
+// 
+@PointClass = pool_ball_spawn : ""
 [
-	rendercolor(color255) : "Color" : "255,255,255,255" : "The color of the ball"
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+	type(string) : "Type" :  : ""
+	number(string) : "Number" :  : ""
 
-	type(choices) : "Type" : 0 : "The type of ball" =
-	[
-		0 : "Spots"
-		1 : "Stripes"
-		2 : "White"
-		3 : "Black"
-	]
-	
-	number(choices) : "Number" : 1 : "The number of the ball" =
-	[
-		1 : "One"
-		2 : "Two"
-		3 : "Three"
-		4 : "Four"
-		5 : "Five"
-		6 : "Six"
-		7 : "Seven"
-	]
 ]
+
+// 
+// PoolGame.PoolCue : Sandbox.ModelEntity 
+// 
+@PointClass = pool_cue : ""
+[
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+]
+
+// 
+// PoolGame.ShotPowerLine : Sandbox.RenderEntity 
+// 
+@PointClass = shot_power_arrow : ""
+[
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+]
+
+// 
+// PoolGame.TriggerBallPocket : Sandbox.BaseTrigger 
+// 
+@SolidClass 
+metadata
+{
+	auto_apply_material = "materials/tools/toolstrigger.vmat"
+}
+= trigger_ball_pocket : ""
+[
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+	startdisabled(boolean) : "StartDisabled" :  : "Should this start disabled?"
+	filtername(boolean) : "filtername" :  : "Filter to use to see if activator triggers me. See filter_activator_name for more explanation."
+
+	input Enable(void) : "Enables this trigger"
+	input Disable(void) : "Disables this trigger"
+	input Toggle(void) : "Toggles this trigger between enabled and disabled states"
+	output OnStartTouchOutput(void) : "Fired when an entity starts touching this trigger. The touching entity must pass this trigger's filters to cause this output to fire."
+	output OnEndTouchOutput(void) : "Fired when an entity stops touching this trigger. Only entities that passed this trigger's filters will cause this output to fire."
+
+]
+
+// 
+// PoolGame.TriggerWhiteArea : Sandbox.BaseTrigger 
+// 
+@SolidClass 
+metadata
+{
+	auto_apply_material = "materials/tools/toolstrigger.vmat"
+}
+= trigger_white_area : ""
+[
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+	startdisabled(boolean) : "StartDisabled" :  : "Should this start disabled?"
+	filtername(boolean) : "filtername" :  : "Filter to use to see if activator triggers me. See filter_activator_name for more explanation."
+
+	input Enable(void) : "Enables this trigger"
+	input Disable(void) : "Disables this trigger"
+	input Toggle(void) : "Toggles this trigger between enabled and disabled states"
+	output OnStartTouchOutput(void) : "Fired when an entity starts touching this trigger. The touching entity must pass this trigger's filters to cause this output to fire."
+	output OnEndTouchOutput(void) : "Fired when an entity stops touching this trigger. Only entities that passed this trigger's filters will cause this output to fire."
+
+]
+
+// 
+// PoolGame.WhiteAreaQuad : Sandbox.RenderEntity 
+// 
+@PointClass = white_area_quad : ""
+[
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+]
+

@@ -52,21 +52,19 @@ namespace PoolGame
 			if ( !IsOwnerInPlay( whiteBall, out var controller ) )
 				return;
 
-			var input = controller.Input;
-
 			if ( controller.IsPlacingWhiteBall )
 			{
-				HandleWhiteBallPlacement( controller, input, whiteBall );
+				HandleWhiteBallPlacement( controller, whiteBall );
 				return;
 			}
 
-			if ( !input.Down( InputButton.Attack1 ) )
+			if ( !Input.Down( InputButton.Attack1 ) )
 			{
-				UpdateAimDir( controller, input, whiteBall.Position );
+				UpdateAimDir( controller, whiteBall.Position );
 
 				if ( !IsMakingShot )
 				{
-					RotateCue( input, whiteBall );
+					RotateCue( whiteBall );
 				}
 				else
 				{
@@ -80,7 +78,7 @@ namespace PoolGame
 			}
 			else
 			{
-				HandlePowerSelection( controller, input );
+				HandlePowerSelection( controller );
 			}
 
 			EnableDrawing = true;
@@ -208,9 +206,9 @@ namespace PoolGame
 			}
 		}
 
-		private void HandleWhiteBallPlacement( Player controller, UserInput input, PoolBall whiteBall )
+		private void HandleWhiteBallPlacement( Player controller, PoolBall whiteBall )
 		{
-			var cursorTrace = Trace.Ray( controller.EyePos, controller.EyePos + input.CursorAim * 1000f )
+			var cursorTrace = Trace.Ray( controller.EyePos, controller.EyePos + Input.CursorAim * 1000f )
 				.WorldOnly()
 				.Run();
 
@@ -219,13 +217,13 @@ namespace PoolGame
 
 			whiteBall.TryMoveTo( cursorTrace.EndPos, whiteAreaWorldOBB );
 
-			if ( input.Released( InputButton.Attack1 ) )
+			if ( Input.Released( InputButton.Attack1 ) )
 				controller.StopPlacingWhiteBall();
 		}
 
-		private void HandlePowerSelection( Player controller, UserInput input )
+		private void HandlePowerSelection( Player controller )
 		{
-			var cursorPlaneEndPos = controller.EyePos + input.CursorAim * 350f;
+			var cursorPlaneEndPos = controller.EyePos + Input.CursorAim * 350f;
 			var distanceToCue = cursorPlaneEndPos.Distance( Position - Rotation.Forward * 100f );
 			var cuePullBackDelta = (_lastPowerDistance - distanceToCue) * Time.Delta * 20f;
 
@@ -242,12 +240,12 @@ namespace PoolGame
 			ShotPower = _cuePullBackOffset.AsPercentMinMax( 0f, 8f );
 		}
 
-		private bool UpdateAimDir( Player controller, UserInput input, Vector3 ballCenter )
+		private bool UpdateAimDir( Player controller, Vector3 ballCenter )
 		{
 			if ( IsMakingShot ) return true;
 
 			var tablePlane = new Plane( ballCenter, Vector3.Up );
-			var hitPos = tablePlane.Trace( new Ray( controller.EyePos, input.CursorAim ), true );
+			var hitPos = tablePlane.Trace( new Ray( controller.EyePos, Input.CursorAim ), true );
 
 			if ( !hitPos.HasValue ) return false;
 
@@ -256,7 +254,7 @@ namespace PoolGame
 			return true;
 		}
 
-		private void RotateCue( UserInput input, PoolBall whiteBall )
+		private void RotateCue( PoolBall whiteBall )
 		{
 			var rollTrace = Trace.Ray( whiteBall.Position, whiteBall.Position - AimDir * 100f )
 				.Ignore( this )
