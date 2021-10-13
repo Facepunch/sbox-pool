@@ -22,6 +22,7 @@ namespace PoolGame
 
 		public void StartPlacing()
 		{
+			RenderColor = RenderColor.WithAlpha( 0.75f );
 			EnableAllCollisions = false;
 			PhysicsEnabled = false;
 		}
@@ -85,6 +86,7 @@ namespace PoolGame
 			EnableAllCollisions = true;
 			PhysicsEnabled = true;
 			ResetInterpolation();
+			RenderColor = RenderColor.WithAlpha( 1f );
 		}
 
 		public void SetType( PoolBallType type, PoolBallNumber number )
