@@ -41,7 +41,7 @@ namespace Facepunch.Pool
 		private Dictionary<long, int> _ratings;
 		private BaseRound _lastRound;
 
-		[ServerVar( "pool_min_players", Help = "The minimum players required to start." )]
+		[ConVar.Server( "pool_min_players", Help = "The minimum players required to start." )]
 		public static int MinPlayers { get; set; } = 2;
 
 		public Game()
@@ -193,10 +193,6 @@ namespace Facepunch.Pool
 						BlackBall = ball;
 
 					AllBalls.Add( ball );
-				}
-				else
-				{
-					Log.Warning( entity.EngineEntityName + " was not a spawner!" );
 				}
 			}
 		}

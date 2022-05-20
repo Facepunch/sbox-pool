@@ -14,7 +14,6 @@ namespace Facepunch.Pool
 		public Material Material = Material.Load( "materials/pool_white_area.vmat" );
 		public bool IsEnabled { get; set; }
 
-
 		public override void DoRender( SceneObject sceneObject  )
 		{
 			if ( IsEnabled  )
