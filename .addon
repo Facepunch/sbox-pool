@@ -20,8 +20,64 @@
     ],
     "MinPlayers": 1,
     "MaxPlayers": 2,
-    "MapSelect": 1,
-    "RankType": 1,
-    "LeaderboardType": 1
+    "MapSelect": "Hidden",
+    "RankType": "Elo",
+    "LeaderboardType": "Descending",
+    "GameNetworkType": "Multiplayer",
+    "PerMapRanking": false,
+    "GameCategory": "None",
+    "Physics": {
+      "SubSteps": 10,
+      "TimeScale": 1,
+      "Gravity": "0,0,-800",
+      "AirDensity": 1.2,
+      "SleepingEnabled": true,
+      "SimulationMode": "Continuous",
+      "PositionIterations": 2,
+      "VelocityIterations": 8,
+      "SoftBodyIterations": 1,
+      "SoftBodySubsteps": 1
+    },
+    "Collision": {
+      "Defaults": {
+        "solid": "Collide",
+        "trigger": "Trigger",
+        "ladder": "Ignore",
+        "water": "Trigger",
+        "ball": "Collide"
+      },
+      "Pairs": [
+        {
+          "a": "solid",
+          "b": "solid",
+          "r": "Collide"
+        },
+        {
+          "a": "trigger",
+          "b": "playerclip",
+          "r": "Ignore"
+        },
+        {
+          "a": "trigger",
+          "b": "solid",
+          "r": "Trigger"
+        },
+        {
+          "a": "solid",
+          "b": "trigger",
+          "r": "Collide"
+        },
+        {
+          "a": "playerclip",
+          "b": "solid",
+          "r": "Collide"
+        },
+        {
+          "a": "trigger",
+          "b": "ball",
+          "r": "Trigger"
+        }
+      ]
+    }
   }
 }

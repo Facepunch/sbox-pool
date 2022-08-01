@@ -51,8 +51,6 @@ namespace Facepunch.Pool
 				LoadRatings();
 				Hud = new();
 			}
-
-			Global.PhysicsSubSteps = 10;
 		}
 
 		public async Task RespawnBallAsync( PoolBall ball, bool shouldAnimate = false )
