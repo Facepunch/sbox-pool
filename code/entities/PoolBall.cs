@@ -66,7 +66,8 @@ namespace Facepunch.Pool
 			{
 				await Task.Delay( 30 );
 
-				Scale = Scale.LerpTo( 0.69f /* nice */, Time.Delta * 4f );
+				//This is making the balls fly away.
+				//Scale = Scale.LerpTo( 0.69f /* nice */, Time.Delta * 4f );
 				RenderColor = RenderColor.WithAlpha( RenderColor.a.LerpTo( 0f, Time.Delta * 5f ) );
 
 				if ( LastPocket != null && LastPocket.IsValid() )
