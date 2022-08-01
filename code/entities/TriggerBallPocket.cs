@@ -12,6 +12,7 @@ namespace Facepunch.Pool
 		{
 			if ( other is PoolBall ball )
 			{
+				Log.Info( this + " (" + ball.Type + " / " + ball.Number + ") Distance: " + Position.Distance( ball.Position ) );
 				ball.OnEnterPocket( this );
 			}
 

@@ -138,6 +138,8 @@ namespace Facepunch.Pool
 			SetModel( "models/pool/pool_ball.vmdl" );
 			SetupPhysicsFromModel( PhysicsMotionType.Dynamic, true );
 
+			Tags.Add( "ball" );
+
 			Transmit = TransmitType.Always;
 		}
 
@@ -154,7 +156,7 @@ namespace Facepunch.Pool
 		protected override void OnPhysicsCollision( CollisionEventData eventData )
 		{
 			// Our last striker is the one responsible for this collision.
-			if ( eventData.Entity is PoolBall other )
+			if ( eventData.This.Entity is PoolBall other )
 			{
 				LastStriker = Game.Instance.CurrentPlayer;
 				Game.Instance.Round?.OnBallHitOtherBall( this, other );
@@ -173,7 +175,7 @@ namespace Facepunch.Pool
 				}
 			}
 
-			Velocity = eventData.PostVelocity.WithZ( 0f );
+			Velocity = eventData.This.PostVelocity.WithZ( 0f );
 
 			base.OnPhysicsCollision( eventData );
 		}
