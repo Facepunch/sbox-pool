@@ -157,7 +157,7 @@ namespace Facepunch.Pool
 		protected override void OnPhysicsCollision( CollisionEventData eventData )
 		{
 			// Our last striker is the one responsible for this collision.
-			if ( eventData.This.Entity is PoolBall other )
+			if ( eventData.Other.Entity is PoolBall other )
 			{
 				LastStriker = Game.Instance.CurrentPlayer;
 				Game.Instance.Round?.OnBallHitOtherBall( this, other );
