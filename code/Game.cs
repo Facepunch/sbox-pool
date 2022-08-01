@@ -293,14 +293,14 @@ namespace Facepunch.Pool
 
 		private void OnIsFastForwardingChanged( bool oldValue, bool newValue )
 		{
-			if ( _fastForwardHud != null )
-			{
-				_fastForwardHud.Delete();
-				_fastForwardHud = null;
-			}
+			//if ( _fastForwardHud != null )
+			//{
+			//	_fastForwardHud.Delete();
+			//	_fastForwardHud = null;
+			//}
 
-			if ( newValue )
-				_fastForwardHud = Local.Hud.AddChild<FastForward>();
+			//if ( newValue )
+			//	_fastForwardHud = Local.Hud.AddChild<FastForward>();
 		}
 
 		private void OnSecond()
