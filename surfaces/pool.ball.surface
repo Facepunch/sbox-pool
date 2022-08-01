@@ -2,18 +2,23 @@
 {
 	data = 
 	{
-		Base = "default"
-		Friction = 1.0
-		Elasticity = 1.0
-		Density = 100.0
-		Thickness = -1.0
-		Dampening = 0.0
+		BaseSurface = null
+		AudioMaterial = null
+		Description = ""
+		Friction = 1
+		Elasticity = 1
+		Density = 100
+		Thickness = 0
+		Dampening = 0
+		BounceThreshold = 0
 		ImpactEffects = 
 		{
 		}
 		Sounds = 
 		{
 		}
-		BounceThreshold = 0.5
+		Breakables = 
+		{
+		}
 	}
 }
