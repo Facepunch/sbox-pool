@@ -32,7 +32,6 @@
       "Gravity": "0,0,-800",
       "AirDensity": 1.2,
       "SleepingEnabled": true,
-      "SimulationMode": "Continuous",
       "PositionIterations": 2,
       "VelocityIterations": 8,
       "SoftBodyIterations": 1,
@@ -44,7 +43,7 @@
         "trigger": "Trigger",
         "ladder": "Ignore",
         "water": "Trigger",
-        "ball": "Collide"
+        "balls": "Collide"
       },
       "Pairs": [
         {
@@ -74,7 +73,11 @@
         },
         {
           "a": "trigger",
-          "b": "ball",
+          "b": "trigger"
+        },
+        {
+          "a": "trigger",
+          "b": "balls",
           "r": "Trigger"
         }
       ]
