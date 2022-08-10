@@ -165,6 +165,8 @@ namespace Facepunch.Pool
 				var sound = PlaySound( "ball-collide" );
 				sound.SetPitch( Rand.Float( 0.9f, 1f ) );
 				sound.SetVolume( (1f / 100f) * eventData.Speed );
+
+				Velocity = eventData.This.PostVelocity.WithZ( 0f );
 			}
 			else
 			{
@@ -173,10 +175,17 @@ namespace Facepunch.Pool
 					var sound = PlaySound( "ball-hit-side" );
 					sound.SetPitch( Rand.Float( 0.9f, 1f ) );
 					sound.SetVolume( (1f / 100f) * eventData.Speed );
+
+					var velocity = eventData.This.PreVelocity.WithZ( 0f );
+					var speed = velocity.Length;
+					var direction = Vector3.Reflect( velocity.Normal, eventData.Normal.Normal ).Normal;
+					Velocity = direction * speed * 0.8f;
+				}
+				else
+				{
+					Velocity = eventData.This.PostVelocity.WithZ( 0f );
 				}
 			}
-
-			Velocity = eventData.This.PostVelocity.WithZ( 0f );
 
 			base.OnPhysicsCollision( eventData );
 		}

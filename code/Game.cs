@@ -293,14 +293,14 @@ namespace Facepunch.Pool
 
 		private void OnIsFastForwardingChanged( bool oldValue, bool newValue )
 		{
-			//if ( _fastForwardHud != null )
-			//{
-			//	_fastForwardHud.Delete();
-			//	_fastForwardHud = null;
-			//}
+			if ( _fastForwardHud != null )
+			{
+				_fastForwardHud.Delete();
+				_fastForwardHud = null;
+			}
 
-			//if ( newValue )
-			//	_fastForwardHud = Local.Hud.AddChild<FastForward>();
+			if ( newValue )
+				_fastForwardHud = Local.Hud.AddChild<FastForward>();
 		}
 
 		private void OnSecond()
@@ -314,7 +314,7 @@ namespace Facepunch.Pool
 		{
 			Round?.OnTick();
 
-			Global.PhysicsTimeScale = IsFastForwarding ? 5f : 1f;
+			Map.Physics.TimeScale = IsFastForwarding ? 5f : 1f;
 
 			if ( IsClient )
 			{
@@ -336,7 +336,6 @@ namespace Facepunch.Pool
 
 				if ( Time.Tick % 30 == 0 )
 				{
-					// TODO: This is temporary, only update history when the list changes.
 					UpdatePotHistory();
 				}
 			}
