@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -25,7 +26,7 @@ namespace Facepunch.Pool
 		public static BaseGameRules Rules => Instance?.InternalGameRules;
 
 		[Net] public PoolCue Cue { get; private set; }
-		[Net] public BaseRound Round { get; private set; }
+		[Net, Change( nameof( OnRoundChanged ) )] public BaseRound Round { get; private set; }
 		[Net] public PoolBall WhiteBall { get; set; }
 		[Net] public PoolBall BlackBall { get; set; }
 		[Net] public Player CurrentPlayer { get; set; }
@@ -39,9 +40,11 @@ namespace Facepunch.Pool
 		[ConVar.Replicated( "pool_game_rules" )]
 		public static string GameRulesConVar { get; set; } = "rules_regular";
 
+		[ConVar.Replicated( "pool_turn_time" )]
+		public static int TurnTime { get; set; } = 30;
+
 		private FastForward FastForwardHud;
 		private WinSummary WinSummaryHud;
-		private BaseRound LastRound;
 
 		public Game()
 		{
@@ -49,13 +52,16 @@ namespace Facepunch.Pool
 			{
 				Hud = new();
 				LoadGameRules( GameRulesConVar );
+				ChangeRound( new LobbyRound() );
 			}
 		}
 
 		public async Task RespawnBallAsync( PoolBall ball, bool shouldAnimate = false )
 		{
 			if ( shouldAnimate )
+			{
 				await ball.AnimateIntoPocket();
+			}
 
 			var entities = All.Where( ( e ) => e is PoolBallSpawn );
 
@@ -173,11 +179,10 @@ namespace Facepunch.Pool
 			{
 				if ( entity is PoolBallSpawn spawner )
 				{
-					var ball = new PoolBall
-					{
-						Position = spawner.Position,
-						Rotation = Rotation.LookAt( Vector3.Random )
-					};
+					var ball = Rules.CreatePoolBall();
+
+					ball.Position = spawner.Position;
+					ball.Rotation = Rotation.LookAt( Vector3.Random );
 
 					ball.SetType( spawner.Type, spawner.Number );
 
@@ -202,10 +207,21 @@ namespace Facepunch.Pool
 
 		public async Task StartSecondTimer()
 		{
-			while (true)
+			while ( true )
 			{
-				await Task.DelaySeconds( 1 );
-				OnSecond();
+				try
+				{
+					await Task.DelaySeconds( 1 );
+					OnSecond();
+				}
+				catch ( TaskCanceledException e )
+				{
+					break;
+				}
+				catch ( Exception e )
+				{
+					Log.Error( e.Message );
+				}
 			}
 		}
 
@@ -225,8 +241,7 @@ namespace Facepunch.Pool
 
 			if ( IsServer )
 			{
-				var cue = new PoolCue();
-				Cue = cue;
+				Cue = Rules.CreatePoolCue();
 			}
 
 			base.PostLevelLoaded();
@@ -282,7 +297,7 @@ namespace Facepunch.Pool
 
 		private void LoadGameRules( string rules )
 		{
-			InternalGameRules = TypeLibrary.Create<BaseGameRules>( rules );
+			InternalGameRules = TypeLibrary.Create<BaseGameRules>( rules, false ) ?? new RegularRules();
 		}
 
 		private void OnSecond()
@@ -291,7 +306,7 @@ namespace Facepunch.Pool
 			Round?.OnSecond();
 		}
 
-		[Event( EventType.Tick )]
+		[Event.Tick]
 		private void Tick()
 		{
 			Round?.OnTick();
@@ -300,13 +315,6 @@ namespace Facepunch.Pool
 
 			if ( IsClient )
 			{
-				if ( LastRound != Round )
-				{
-					LastRound?.Finish();
-					LastRound = Round;
-					LastRound.Start();
-				}
-
 				if ( WhiteArea == null )
 				{
 					WhiteArea = All.OfType<TriggerWhiteArea>().FirstOrDefault();
@@ -320,6 +328,12 @@ namespace Facepunch.Pool
 					UpdatePotHistory();
 				}
 			}
+		}
+
+		private void OnRoundChanged( BaseRound oldRound, BaseRound newRound )
+		{
+			oldRound?.Finish();
+			newRound?.Start();
 		}
 
 		private void CheckMinimumPlayers()

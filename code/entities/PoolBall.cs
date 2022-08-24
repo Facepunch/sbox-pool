@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Facepunch.Pool
 {
-	[Library( "pool_ball" )]
 	public partial class PoolBall : ModelEntity
 	{
 		[Net] public PoolBallNumber Number { get; private set; }

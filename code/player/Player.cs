@@ -159,7 +159,6 @@ namespace Facepunch.Pool
 		public override void Simulate( Client client )
 		{
 			Game.Instance.Round?.UpdatePlayerPosition( this );
-
 			base.Simulate( client );
 		}
 	}
