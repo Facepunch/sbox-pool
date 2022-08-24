@@ -43,13 +43,9 @@ namespace Facepunch.Pool
 		public override void UpdatePlayerPosition( Player player )
 		{
 			if ( BallLikelyToPot.IsValid() )
-			{
 				player.Position = BallLikelyToPot.Position.WithZ( 200f );
-			}
 			else
-			{
 				player.Position = new Vector3( 0f, 0f, 350f );
-			}
 			
 			player.Rotation = Rotation.LookAt( Vector3.Down );
 		}
@@ -373,10 +369,6 @@ namespace Facepunch.Pool
 			Game.Instance.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser );
 			Game.Instance.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner );
 
-			Game.Instance.UpdateRating( winner );
-			Game.Instance.UpdateRating( loser );
-			Game.Instance.SaveRatings();
-
 			//
 			// Save session
 			//
@@ -387,7 +379,6 @@ namespace Facepunch.Pool
 
 		private PoolBall FindBallLikelyToPot()
 		{
-			var currentPlayer = Game.Instance.CurrentPlayer;
 			var potentials = Game.Instance.AllBalls;
 			var pockets = Entity.All.OfType<TriggerBallPocket>();
 

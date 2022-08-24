@@ -36,21 +36,21 @@ namespace Facepunch.Pool
 		[Net] public IList<PotHistoryItem> PotHistory { get; set; }
 		[Net, Change] public bool IsFastForwarding { get; set; }
 
-		private FastForward _fastForwardHud;
-		private WinSummary _winSummaryHud;
-		private Dictionary<long, int> _ratings;
-		private BaseRound _lastRound;
+		[ConVar.Replicated( "pool_game_rules" )]
+		public static string GameRules { get; set; } = "Normal";
 
-		[ConVar.Server( "pool_min_players", Help = "The minimum players required to start." )]
-		public static int MinPlayers { get; set; } = 2;
+		private FastForward FastForwardHud;
+		private WinSummary WinSummaryHud;
+		private BaseRound LastRound;
 
 		public Game()
 		{
 			if ( IsServer )
 			{
-				LoadRatings();
 				Hud = new();
 			}
+
+			LoadGameRules( GameRules );
 		}
 
 		public async Task RespawnBallAsync( PoolBall ball, bool shouldAnimate = false )
@@ -94,17 +94,17 @@ namespace Facepunch.Pool
 		{
 			HideWinSummary();
 
-			_winSummaryHud = Local.Hud.AddChild<WinSummary>();
-			_winSummaryHud.Update( outcome, opponent );
+			WinSummaryHud = Local.Hud.AddChild<WinSummary>();
+			WinSummaryHud.Update( outcome, opponent );
 		}
 
 		[ClientRpc]
 		public void HideWinSummary()
 		{
-			if ( _winSummaryHud != null )
+			if ( WinSummaryHud != null )
 			{
-				_winSummaryHud.Delete();
-				_winSummaryHud = null;
+				WinSummaryHud.Delete();
+				WinSummaryHud = null;
 			}
 		}
 
@@ -195,16 +195,6 @@ namespace Facepunch.Pool
 			}
 		}
 
-		public void UpdateRating( Player player )
-		{
-			_ratings[player.Client.PlayerId] = player.Elo.Rating;
-		}
-
-		public void SaveRatings()
-		{
-			//FileSystem.Mounted.WriteAllText( "data/pool/ratings.json", JsonSerializer.Serialize( _ratings ) );
-		}
-
 		public void ChangeRound(BaseRound round)
 		{
 			Assert.NotNull( round );
@@ -273,9 +263,6 @@ namespace Facepunch.Pool
 		{
 			var player = new Player();
 
-			if ( _ratings.TryGetValue( client.PlayerId, out var rating ) )
-				player.Elo.Rating = rating;
-
 			client.Pawn = player;
 
 			Round?.OnPlayerJoin( player );
@@ -293,14 +280,19 @@ namespace Facepunch.Pool
 
 		private void OnIsFastForwardingChanged( bool oldValue, bool newValue )
 		{
-			if ( _fastForwardHud != null )
+			if ( FastForwardHud != null )
 			{
-				_fastForwardHud.Delete();
-				_fastForwardHud = null;
+				FastForwardHud.Delete();
+				FastForwardHud = null;
 			}
 
 			if ( newValue )
-				_fastForwardHud = Local.Hud.AddChild<FastForward>();
+				FastForwardHud = Local.Hud.AddChild<FastForward>();
+		}
+
+		private void LoadGameRules( string rules )
+		{
+			// TODO: Find game rules with this name and load them.
 		}
 
 		private void OnSecond()
@@ -318,12 +310,11 @@ namespace Facepunch.Pool
 
 			if ( IsClient )
 			{
-				// We have to hack around this for now until we can detect changes in net variables.
-				if ( _lastRound != Round )
+				if ( LastRound != Round )
 				{
-					_lastRound?.Finish();
-					_lastRound = Round;
-					_lastRound.Start();
+					LastRound?.Finish();
+					LastRound = Round;
+					LastRound.Start();
 				}
 
 				if ( WhiteArea == null )
@@ -341,14 +332,9 @@ namespace Facepunch.Pool
 			}
 		}
 
-		private void LoadRatings()
-		{
-			_ratings = FileSystem.Mounted.ReadJsonOrDefault<Dictionary<long, int>>( "data/pool/ratings.json" ) ?? new();
-		}
-
 		private void CheckMinimumPlayers()
 		{
-			if ( Client.All.Count >= MinPlayers)
+			if ( Client.All.Count >= 2)
 			{
 				if ( Round is LobbyRound || Round == null )
 				{

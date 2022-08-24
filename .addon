@@ -81,6 +81,18 @@
           "r": "Trigger"
         }
       ]
+    },
+    "GameSettings": {
+      "pool_game_rules": {
+        "DisplayType": "Choice",
+        "Choices": [
+          "Regular",
+          "Power Pool"
+        ],
+        "ConVarName": "pool_game_rules",
+        "DisplayName": "Game Rules",
+        "DefaultValue": "Regular"
+      }
     }
   }
 }
