@@ -37,7 +37,7 @@ namespace Facepunch.Pool
 		[Net] private BaseGameRules InternalGameRules { get; set; }
 
 		[ConVar.Replicated( "pool_game_rules" )]
-		public static string GameRulesConVar { get; set; } = "Regular";
+		public static string GameRulesConVar { get; set; } = "rules_regular";
 
 		private FastForward FastForwardHud;
 		private WinSummary WinSummaryHud;
@@ -282,10 +282,7 @@ namespace Facepunch.Pool
 
 		private void LoadGameRules( string rules )
 		{
-			if ( rules == "Regular" )
-				InternalGameRules = new RegularRules();
-			else if ( rules == "Power Pool" )
-				InternalGameRules = new PowerPoolRules();
+			InternalGameRules = TypeLibrary.Create<BaseGameRules>( rules );
 		}
 
 		private void OnSecond()

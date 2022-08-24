@@ -86,12 +86,18 @@
       "pool_game_rules": {
         "DisplayType": "Choice",
         "Choices": [
-          "Regular",
-          "Power Pool"
+          {
+            "Value": "rules_regular",
+            "Name": "Regular"
+          },
+          {
+            "Value": "rules_power_pool",
+            "Name": "Power Pool"
+          }
         ],
         "ConVarName": "pool_game_rules",
         "DisplayName": "Game Rules",
-        "DefaultValue": "Regular"
+        "DefaultValue": "rules_regular"
       }
     }
   }
