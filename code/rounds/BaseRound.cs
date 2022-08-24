@@ -72,7 +72,6 @@ namespace Facepunch.Pool
 		public virtual void UpdatePlayerPosition( Player player )
 		{
 			var zoomOutDistance = 350f;
-
 			player.Position = new Vector3( 0f, 0f, zoomOutDistance );
 			player.Rotation = Rotation.LookAt( Vector3.Down );
 		}

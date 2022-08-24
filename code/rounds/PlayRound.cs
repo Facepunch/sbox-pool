@@ -34,7 +34,8 @@ namespace Facepunch.Pool
 
 			if ( player == playerOne || player == playerTwo )
 			{
-				GameServices.AbandonGame( true );
+				if ( Game.Rules.IsRanked )
+					GameServices.AbandonGame( true );
 
 				Game.Instance.ChangeRound( new StatsRound() );
 			}
@@ -318,9 +319,10 @@ namespace Facepunch.Pool
 			// We always start by letting the player choose the white ball location.
 			Game.Instance.CurrentPlayer.StartPlacingWhiteBall();
 
-			PlayerTurnEndTime = 30f;
+			PlayerTurnEndTime = Game.TurnTime;
 
-			GameServices.StartGame();
+			if ( Game.Rules.IsRanked )
+				GameServices.StartGame();
 		}
 
 		private void DoPlayerPotBall( Player player, PoolBall ball, BallPotType type )
@@ -333,7 +335,8 @@ namespace Facepunch.Pool
 				Number = ball.Number
 			} );
 
-			GameServices.RecordEvent( player.Client, $"Potted {ball.Number} ({ball.Type})", 1 );
+			if ( Game.Rules.IsRanked )
+				GameServices.RecordEvent( player.Client, $"Potted {ball.Number} ({ball.Type})", 1 );
 
 			if ( type == BallPotType.Normal )
 				Game.Instance.AddToast( To.Everyone, player, $"{ player.Client.Name } has potted a ball", ball.GetIconClass() );
@@ -355,8 +358,11 @@ namespace Facepunch.Pool
 			var loser = Game.Instance.GetOtherPlayer( winner );
 			winner.Elo.Update( loser.Elo, EloOutcome.Win );
 
-			winner.Client.SetGameResult( GameplayResult.Win, winner.Score );
-			loser.Client.SetGameResult( GameplayResult.Lose, loser.Score );
+			if ( Game.Rules.IsRanked )
+			{
+				winner.Client.SetGameResult( GameplayResult.Win, winner.Score );
+				loser.Client.SetGameResult( GameplayResult.Lose, loser.Score );
+			}
 
 			foreach ( var c in Entity.All.OfType<Player>() )
 			{
@@ -369,10 +375,8 @@ namespace Facepunch.Pool
 			Game.Instance.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser );
 			Game.Instance.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner );
 
-			//
-			// Save session
-			//
-			GameServices.EndGame();
+			if ( Game.Rules.IsRanked )
+				GameServices.EndGame();
 
 			Game.Instance.ChangeRound( new StatsRound() );
 		}
@@ -528,7 +532,7 @@ namespace Facepunch.Pool
 
 			Game.Instance.IsFastForwarding = false;
 
-			PlayerTurnEndTime = Time.Now + 30f;
+			PlayerTurnEndTime = Time.Now + Game.TurnTime;
 			DidClaimThisTurn = false;
 			BallLikelyToPot = null;
 		}

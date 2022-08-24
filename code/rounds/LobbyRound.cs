@@ -13,8 +13,6 @@ namespace Facepunch.Pool
 
 		protected override void OnStart()
 		{
-			Log.Info( "Started Lobby Round" );
-
 			if ( Host.IsServer )
 			{
 				var players = Client.All.Select( ( client ) => client.Pawn as Player );
@@ -28,7 +26,6 @@ namespace Facepunch.Pool
 
 		protected override void OnFinish()
 		{
-			Log.Info( "Finished Lobby Round" );
 		}
 
 		public override void OnPlayerJoin( Player player )
