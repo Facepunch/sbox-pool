@@ -98,6 +98,14 @@
         "ConVarName": "pool_game_rules",
         "DisplayName": "Game Rules",
         "DefaultValue": "rules_regular"
+      },
+      "pool_turn_time": {
+        "DisplayType": "Integer",
+        "Choices": [],
+        "ConVarName": "pool_turn_time",
+        "DisplayName": "Turn Time",
+        "DefaultValue": "30",
+        "Maximum": 60
       }
     }
   }
