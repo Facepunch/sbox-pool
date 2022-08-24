@@ -40,6 +40,7 @@ namespace Facepunch.Pool
 			SetModel( "models/pool/pool_cue_b.vmdl" );
 
 			EnableDrawing = false;
+			Predictable = true;
 			Transmit = TransmitType.Always;
 		}
 
