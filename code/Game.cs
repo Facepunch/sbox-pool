@@ -21,10 +21,8 @@ namespace Facepunch.Pool
 		public List<PoolBall> AllBalls { get; private set; }
 		public Hud Hud { get; set; }
 
-		public static Game Instance
-		{
-			get => Current as Game;
-		}
+		public static Game Instance => Current as Game;
+		public static BaseGameRules Rules => Instance?.InternalGameRules;
 
 		[Net] public PoolCue Cue { get; private set; }
 		[Net] public BaseRound Round { get; private set; }
@@ -36,8 +34,10 @@ namespace Facepunch.Pool
 		[Net] public IList<PotHistoryItem> PotHistory { get; set; }
 		[Net, Change] public bool IsFastForwarding { get; set; }
 
+		[Net] private BaseGameRules InternalGameRules { get; set; }
+
 		[ConVar.Replicated( "pool_game_rules" )]
-		public static string GameRules { get; set; } = "Normal";
+		public static string GameRulesConVar { get; set; } = "Regular";
 
 		private FastForward FastForwardHud;
 		private WinSummary WinSummaryHud;
@@ -48,9 +48,8 @@ namespace Facepunch.Pool
 			if ( IsServer )
 			{
 				Hud = new();
+				LoadGameRules( GameRulesConVar );
 			}
-
-			LoadGameRules( GameRules );
 		}
 
 		public async Task RespawnBallAsync( PoolBall ball, bool shouldAnimate = false )
@@ -167,9 +166,6 @@ namespace Facepunch.Pool
 			RemoveAllBalls();
 
 			var entities = All.Where( ( e ) => e is PoolBallSpawn );
-
-			Log.Warning( "Found " + entities.Count() + " Ball Spawners" );
-
 			var spawners = new List<Entity>();
 			spawners.AddRange( entities );
 
@@ -220,13 +216,7 @@ namespace Facepunch.Pool
 
 		public override void DoPlayerSuicide( Client client )
 		{
-			if ( client.Pawn.LifeState == LifeState.Alive && Round?.CanPlayerSuicide == true )
-			{
-				// This simulates the player being killed.
-				client.Pawn.LifeState = LifeState.Dead;
-				client.Pawn.OnKilled();
-				OnKilled( client.Pawn );
-			}
+			// Do nothing. The player can't suicide in this mode.
 		}
 
 		public override void PostLevelLoaded()
@@ -292,7 +282,10 @@ namespace Facepunch.Pool
 
 		private void LoadGameRules( string rules )
 		{
-			// TODO: Find game rules with this name and load them.
+			if ( rules == "Regular" )
+				InternalGameRules = new RegularRules();
+			else if ( rules == "Power Pool" )
+				InternalGameRules = new PowerPoolRules();
 		}
 
 		private void OnSecond()

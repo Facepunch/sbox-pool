@@ -66,8 +66,6 @@ namespace Facepunch.Pool
 			{
 				await Task.Delay( 30 );
 
-				//This is making the balls fly away.
-				//Scale = Scale.LerpTo( 0.69f /* nice */, Time.Delta * 4f );
 				RenderColor = RenderColor.WithAlpha( RenderColor.a.LerpTo( 0f, Time.Delta * 5f ) );
 
 				if ( LastPocket != null && LastPocket.IsValid() )
@@ -91,17 +89,11 @@ namespace Facepunch.Pool
 		public void SetType( PoolBallType type, PoolBallNumber number )
 		{
 			if ( type == PoolBallType.Black )
-			{
 				SetMaterialGroup( 8 );
-			}
 			else if ( type == PoolBallType.Spots )
-			{
 				SetMaterialGroup( (int)number );
-			}
 			else if ( type == PoolBallType.Stripes )
-			{
 				SetMaterialGroup( (int)number + 8 );
-			}
 
 			Number = number;
 			Type = type;
