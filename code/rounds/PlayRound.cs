@@ -23,7 +23,9 @@ namespace Facepunch.Pool
 		public Sound? ClockTickingSound { get; private set; }
 
 		public bool HasPlayedFastForwardSound { get; private set; }
+
 		[Net] public PoolBall BallLikelyToPot { get; set; }
+		[Net] public bool IsGameOver { get; set; }
 
 		public override void OnPlayerLeave( Player player )
 		{
@@ -217,7 +219,7 @@ namespace Facepunch.Pool
 
 		public override void OnTick()
 		{
-			if ( Host.IsServer && Game.Instance != null )
+			if ( Host.IsServer && Game.Instance != null && !IsGameOver )
 			{
 				var currentPlayer = Game.Instance.CurrentPlayer;
 
@@ -230,8 +232,6 @@ namespace Facepunch.Pool
 
 		protected override void OnStart()
 		{
-			Log.Info( "Started Play Round" );
-
 			if ( Host.IsServer )
 			{
 				Game.Instance.RespawnAllBalls();
@@ -349,19 +349,25 @@ namespace Facepunch.Pool
 				owner.Score++;
 		}
 
-		private void DoPlayerWin( Player winner )
+		private async void DoPlayerWin( Player winner )
 		{
+			if ( IsGameOver ) return;
+
+			IsGameOver = true;
+
 			var client = winner.Client;
 
 			Game.Instance.AddToast( To.Everyone, winner, $"{ client.Name } has won the game", "wins" );
 
 			var loser = Game.Instance.GetOtherPlayer( winner );
-			winner.Elo.Update( loser.Elo, EloOutcome.Win );
 
 			if ( Game.Rules.IsRanked )
 			{
 				winner.Client.SetGameResult( GameplayResult.Win, winner.Score );
 				loser.Client.SetGameResult( GameplayResult.Lose, loser.Score );
+
+				await winner.Elo.Update( winner.Client );
+				await loser.Elo.Update( loser.Client );
 			}
 
 			foreach ( var c in Entity.All.OfType<Player>() )

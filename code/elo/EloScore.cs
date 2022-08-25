@@ -33,16 +33,25 @@ namespace Facepunch.Pool
 			return Elo.GetLevel( Rating );
 		}
 
-		public void Update( EloScore opponent, EloOutcome outcome )
+		public async Task Update( Client client )
 		{
-			var eloK = 32;
-			var delta = (int)(eloK * ((int)outcome - Elo.GetWinChance( this, opponent )));
+			try
+			{
+				Log.Info( "Awaiting Rank Update" );
 
-			Rating = Math.Max( Rating + delta, 0 );
-			Delta = delta;
+				var score = await client.FetchGameRankAsync();
+				var delta = (score.Level - Rating);
 
-			opponent.Rating = Math.Max( opponent.Rating - delta, 0 );
-			opponent.Delta = Delta;
+				Log.Info( "Update: " + score );
+				Log.Info( "Delta: " + delta );
+
+				Rating = score.Level;
+				Delta = delta;
+			}
+			catch ( TaskCanceledException _ )
+			{
+				Log.Warning( $"Unable to fetch game rank data for {client}!" );
+			}
 		}
 	}
 }

@@ -14,12 +14,12 @@ namespace Facepunch.Pool
 
 		protected override void OnStart()
 		{
-			Log.Info( "Started Stats Round" );
+
 		}
 
 		protected override void OnFinish()
 		{
-			Log.Info( "Finished Stats Round" );
+
 		}
 
 		protected override void OnTimeUp()
