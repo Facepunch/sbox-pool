@@ -76,19 +76,20 @@ namespace Facepunch.Pool
 			BarDelta = BarBackground.Add.Panel( "rank-delta" );
 		}
 
-		public void Update( EloScore score )
+		public void Update( int rating, int delta )
 		{
-			// I'm not a fan of doing it all this way... it'll do for the time being.
-			var previousScore = Math.Max( score.Rating - score.Delta, 0 );
+			var previousScore = Math.Max( rating - delta, 0 );
 			var nextScore = Elo.GetNextLevelRating( previousScore );
 			var progress = 100 - (nextScore - previousScore);
-			var delta = Math.Min( score.Delta, 100 - progress );
 
 			LeftRank.Update( Elo.GetRank( previousScore  ), Elo.GetLevel( previousScore ) );
 			RightRank.Update( Elo.GetRank( nextScore ), Elo.GetLevel( nextScore ) );
 
+			if ( delta < 0 ) progress += delta;
+
 			BarProgress.Style.Width = Length.Percent( progress );
-			BarDelta.Style.Width = Length.Percent( delta );
+			BarDelta.Style.Width = Length.Percent( Math.Min( Math.Abs( delta ), 100 - progress ) );
+			BarDelta.SetClass( "loss", delta < 0 );
 
 			Style.Dirty();
 		}
@@ -116,9 +117,9 @@ namespace Facepunch.Pool
 			AcceptsFocus = true;
 		}
 
-		public void Update( EloOutcome outcome, Player opponent )
+		public void Update( EloOutcome outcome, Player opponent, int rating, int delta )
 		{
-			if ( Local.Pawn is Player player )
+			if ( Local.Pawn is Player )
 			{
 				if ( outcome == EloOutcome.Win )
 					Header.AddClass( "win" );
@@ -126,7 +127,7 @@ namespace Facepunch.Pool
 					Header.AddClass( "loss" );
 
 				OpponentDisplay.Update( outcome, opponent );
-				RankProgress.Update( player.Elo );
+				RankProgress.Update( rating, delta );
 			}
 		}
 	}

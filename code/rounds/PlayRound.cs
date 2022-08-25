@@ -365,9 +365,6 @@ namespace Facepunch.Pool
 			{
 				winner.Client.SetGameResult( GameplayResult.Win, winner.Score );
 				loser.Client.SetGameResult( GameplayResult.Lose, loser.Score );
-
-				await winner.Elo.Update( winner.Client );
-				await loser.Elo.Update( loser.Client );
 			}
 
 			foreach ( var c in Entity.All.OfType<Player>() )
@@ -378,11 +375,18 @@ namespace Facepunch.Pool
 			Game.Instance.PreviousWinner = winner;
 			Game.Instance.PreviousLoser = loser;
 
-			Game.Instance.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser );
-			Game.Instance.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner );
-
 			if ( Game.Rules.IsRanked )
 				GameServices.EndGame();
+
+			await GameTask.DelaySeconds( 3f );
+
+			await winner.Elo.Update( winner.Client );
+			await loser.Elo.Update( loser.Client );
+
+			await GameTask.DelaySeconds( 3f );
+
+			Game.Instance.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser, winner.Elo.Rating, winner.Elo.Delta );
+			Game.Instance.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner, loser.Elo.Rating, loser.Elo.Delta );
 
 			Game.Instance.ChangeRound( new StatsRound() );
 		}

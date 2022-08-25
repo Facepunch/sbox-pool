@@ -95,12 +95,12 @@ namespace Facepunch.Pool
 		}
 
 		[ClientRpc]
-		public void ShowWinSummary( EloOutcome outcome, Player opponent )
+		public void ShowWinSummary( EloOutcome outcome, Player opponent, int rating, int delta )
 		{
 			HideWinSummary();
 
 			WinSummaryHud = Local.Hud.AddChild<WinSummary>();
-			WinSummaryHud.Update( outcome, opponent );
+			WinSummaryHud.Update( outcome, opponent, rating, delta );
 		}
 
 		[ClientRpc]

@@ -143,8 +143,6 @@
                 position: absolute;
                 left: 64px;
                 right: 64px;
-                // No idea why this does this
-                padding-left: 8px;
 
                 .rank-progress {
                     background-color: #43AC4E;
@@ -162,6 +160,10 @@
                     background: linear-gradient(to right, rgba(#3ACFE2,0), rgba(#3ACFE2,0.6));
                     border-radius: 50%;
                     height: 100%;
+
+                    &.loss {
+                        background: linear-gradient(to right, rgba(#e23a3a,0), rgba(#e23a3a,0.6));
+                    }
                 }
             }
 

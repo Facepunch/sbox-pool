@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Sandbox;
+using System;
 
 namespace Facepunch.Pool
 {
@@ -10,7 +7,7 @@ namespace Facepunch.Pool
 	{
 		public static int GetNextLevelRating( int rating )
 		{
-			var roundedUp = Math.Max( ((int)MathF.Ceiling( rating / 100 ) * 100) - 1, 0 );
+			var roundedUp = Math.Max( ((int)Math.Ceiling( rating / 100f ) * 100), 0 );
 			return rating == roundedUp ? rating + 100 : roundedUp;
 		}
 
