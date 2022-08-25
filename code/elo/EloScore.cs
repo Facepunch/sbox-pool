@@ -1,8 +1,4 @@
 ﻿using Sandbox;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Facepunch.Pool
@@ -37,13 +33,8 @@ namespace Facepunch.Pool
 		{
 			try
 			{
-				Log.Info( "Awaiting Rank Update" );
-
 				var score = await client.FetchGameRankAsync();
 				var delta = (score.Level - Rating);
-
-				Log.Info( "Update: " + score );
-				Log.Info( "Delta: " + delta );
 
 				Rating = score.Level;
 				Delta = delta;
