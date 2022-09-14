@@ -199,7 +199,6 @@ namespace Facepunch.Pool
 			if ( Host.IsClient ) return;
 
 			var timeLeft = MathF.Max( PlayerTurnEndTime, 0f );
-
 			var currentPlayer = Game.Instance.CurrentPlayer;
 
 			if ( !currentPlayer.IsValid() )
@@ -214,6 +213,11 @@ namespace Facepunch.Pool
 			{
 				ClockTickingSound = currentPlayer.PlaySound( "clock-ticking" );
 				ClockTickingSound.Value.SetVolume( 0.5f );
+			}
+
+			if ( timeLeft <= 0f )
+			{
+				EndTurn();
 			}
 		}
 
@@ -290,8 +294,6 @@ namespace Facepunch.Pool
 
 		protected override void OnFinish()
 		{
-			Log.Info( "Finished Play Round" );
-
 			if ( Host.IsServer )
 			{
 				Game.Instance.PotHistory.Clear();
@@ -435,39 +437,9 @@ namespace Facepunch.Pool
 			return false;
 		}
 
-		private void CheckForStoppedBalls()
+		private void EndTurn()
 		{
 			var currentPlayer = Game.Instance.CurrentPlayer;
-
-			if ( currentPlayer.TimeSinceWhiteStruck >= 2f && !BallLikelyToPot.IsValid() )
-			{
-				BallLikelyToPot = FindBallLikelyToPot();
-
-				if ( BallLikelyToPot.IsValid() )
-					currentPlayer.PlaySound( $"gasp-{Rand.Int( 1, 2 )}" );
-			}
-
-			if ( ShouldIncreaseTimeScale() && !Game.Instance.IsFastForwarding )
-			{
-				if ( !HasPlayedFastForwardSound )
-				{
-					// Only play this sound once per game because it's annoying.
-					HasPlayedFastForwardSound = true;
-					currentPlayer.PlaySound( "fast-forward" ).SetVolume( 0.05f );
-				}
-
-				Game.Instance.IsFastForwarding = true;
-			}
-
-			// Now check if all balls are essentially still.
-			foreach ( var ball in Game.Instance.AllBalls )
-			{
-				if ( !ball.PhysicsBody.Velocity.IsNearlyZero( 0.2f ) )
-					return;
-
-				if ( ball.IsAnimating )
-					return;
-			}
 
 			Game.Instance.AllBalls.ForEach( ( ball ) =>
 			{
@@ -539,9 +511,46 @@ namespace Facepunch.Pool
 
 			Game.Instance.IsFastForwarding = false;
 
-			PlayerTurnEndTime = Time.Now + Game.TurnTime;
+			PlayerTurnEndTime = Game.TurnTime;
 			DidClaimThisTurn = false;
 			BallLikelyToPot = null;
+		}
+
+		private void CheckForStoppedBalls()
+		{
+			var currentPlayer = Game.Instance.CurrentPlayer;
+
+			if ( currentPlayer.TimeSinceWhiteStruck >= 2f && !BallLikelyToPot.IsValid() )
+			{
+				BallLikelyToPot = FindBallLikelyToPot();
+
+				if ( BallLikelyToPot.IsValid() )
+					currentPlayer.PlaySound( $"gasp-{Rand.Int( 1, 2 )}" );
+			}
+
+			if ( ShouldIncreaseTimeScale() && !Game.Instance.IsFastForwarding )
+			{
+				if ( !HasPlayedFastForwardSound )
+				{
+					// Only play this sound once per game because it's annoying.
+					HasPlayedFastForwardSound = true;
+					currentPlayer.PlaySound( "fast-forward" ).SetVolume( 0.05f );
+				}
+
+				Game.Instance.IsFastForwarding = true;
+			}
+
+			// Now check if all balls are essentially still.
+			foreach ( var ball in Game.Instance.AllBalls )
+			{
+				if ( !ball.PhysicsBody.Velocity.IsNearlyZero( 0.2f ) )
+					return;
+
+				if ( ball.IsAnimating )
+					return;
+			}
+
+			EndTurn();
 		}
 	}
 }

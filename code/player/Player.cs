@@ -119,8 +119,6 @@ namespace Facepunch.Pool
 
 		public void StartTurn(bool hasSecondShot = false, bool showMessage = true)
 		{
-			Log.Info( "Starting Turn: " + Client.Name );
-
 			if ( showMessage )
 				Game.Instance.AddToast( To.Everyone, this, $"{ Client.Name } has started their turn" );
 
