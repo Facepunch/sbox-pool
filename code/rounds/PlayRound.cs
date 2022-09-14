@@ -376,14 +376,11 @@ namespace Facepunch.Pool
 			Game.Instance.PreviousLoser = loser;
 
 			if ( Game.Rules.IsRanked )
-				GameServices.EndGame();
-
-			await GameTask.DelaySeconds( 3f );
-
-			await winner.Elo.Update( winner.Client );
-			await loser.Elo.Update( loser.Client );
-
-			await GameTask.DelaySeconds( 3f );
+			{
+				await GameServices.EndGameAsync();
+				await winner.Elo.Update( winner.Client );
+				await loser.Elo.Update( loser.Client );
+			}
 
 			Game.Instance.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser, winner.Elo.Rating, winner.Elo.Delta );
 			Game.Instance.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner, loser.Elo.Rating, loser.Elo.Delta );

@@ -112,7 +112,9 @@ namespace Facepunch.Pool
 
 			Header = Container.Add.Panel( "win-header" );
 			OpponentDisplay = Container.AddChild<OpponentDisplay>();
-			RankProgress = Container.AddChild<RankProgress>();
+
+			if ( Game.Rules.IsRanked )
+				RankProgress = Container.AddChild<RankProgress>();
 
 			AcceptsFocus = true;
 		}
@@ -127,7 +129,7 @@ namespace Facepunch.Pool
 					Header.AddClass( "loss" );
 
 				OpponentDisplay.Update( outcome, opponent );
-				RankProgress.Update( rating, delta );
+				RankProgress?.Update( rating, delta );
 			}
 		}
 	}

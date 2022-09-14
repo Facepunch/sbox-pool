@@ -17,11 +17,11 @@ namespace Facepunch.Pool
 		public Panel ScoreContainer;
 		public Panel BallType;
 
-		private PlayerRank _lastRank;
+		private PlayerRank LastRank;
 
 		public PlayerDisplayItem()
 		{
-			_lastRank = PlayerRank.Bronze;
+			LastRank = PlayerRank.Bronze;
 
 			PlayerContainer = Add.Panel( "player-container" );
 			Avatar = PlayerContainer.Add.Image( "", "avatar" );
@@ -31,7 +31,9 @@ namespace Facepunch.Pool
 			BallType = ScoreContainer.Add.Panel( "ball" );
 
 			Rank = PlayerContainer.Add.Panel( "division" );
-			Rank.AddClass( _lastRank.ToString().ToLower() );
+			Rank.AddClass( LastRank.ToString().ToLower() );
+			Rank.BindClass( "hidden", () => !Game.Rules?.IsRanked ?? true );
+
 			Level = Rank.Add.Label( "0", "rank" );
 		}
 
@@ -56,11 +58,11 @@ namespace Facepunch.Pool
 				var rank = player.Elo.GetRank();
 				var level = player.Elo.GetLevel();
 
-				if ( _lastRank != rank )
+				if ( LastRank != rank )
 				{
-					Rank.RemoveClass( _lastRank.ToString().ToLower() );
+					Rank.RemoveClass( LastRank.ToString().ToLower() );
 					Rank.AddClass( rank.ToString().ToLower() );
-					_lastRank = rank;
+					LastRank = rank;
 				}
 
 				Level.Text = level.ToString();
