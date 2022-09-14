@@ -4,11 +4,7 @@ Layer0
 {
 	shader "blend.vfx"
 
-	//---- Enable Ambient Occlusion ----
-	F_ENABLE_AMBIENT_OCCLUSION 1
-
-	//---- Enable Tint Masks ----
-	F_ENABLE_TINT_MASKS 1
+	F_MULTIBLEND 1 // 2 Layers
 
 	//---- Color ----
 	g_flModelTintAmount "1.000"
@@ -24,25 +20,31 @@ Layer0
 	g_flDirectionalLightmapMinZ "0.050"
 	g_flDirectionalLightmapStrength "1.000"
 
-	//---- Mask ----
-	TextureMask "textures/pool/fabric_mask.tga"
+	//---- Material ----
+	TextureColor "textures/pool/pool_felt_a_color.tga"
+	TextureTintMask "materials/default/default.tga"
 
 	//---- Material A ----
-	g_flMetalnessA "0.000"
+	g_flTintColorA "[1.000000 1.000000 1.000000 0.000000]"
 	TextureAmbientOcclusionA "textures/pool/pool_felt_a_ao.tga"
+	TextureBlendMaskA "textures/pool/fabric_mask.tga"
 	TextureColorA "textures/pool/pool_felt_a_color.tga"
+	TextureMetalnessA "[0.000000 0.000000 0.000000 0.000000]"
 	TextureNormalA "textures/pool/pool_felt_a_normal.tga"
 	TextureRoughnessA "textures/pool/pool_felt_a_rough.tga"
 	TextureTintMaskA "textures/pool/pool_felt_a_mask.tga"
 
 	//---- Material B ----
-	g_flMetalnessB "0.000"
-	g_vTexCoordScale2 "[0.600 0.600]"
+	g_flBlendSoftnessB "0.500"
+	g_flTintColorB "[1.000000 1.000000 1.000000 0.000000]"
+	g_vTexCoordScale2 "[1.000 1.000]"
 	TextureAmbientOcclusionB "textures/pool/fabric_worn_ao.tga"
+	TextureBlendMaskB "materials/default/default_blend.tga"
 	TextureColorB "textures/pool/fabric_worn_color.tga"
+	TextureMetalnessB "materials/default/default_metal.tga"
 	TextureNormalB "textures/pool/fabric_worn_normal.tga"
 	TextureRoughnessB "textures/pool/fabric_worn_rough.tga"
-	TextureTintMaskB "[0.975000 0.975000 0.975000 0.000000]"
+	TextureTintMaskB "textures/pool/fabric_tint_mask.tga"
 
 	//---- Texture Coordinates ----
 	g_nScaleTexCoordUByModelScaleAxis "0"
