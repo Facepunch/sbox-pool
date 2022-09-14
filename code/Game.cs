@@ -43,6 +43,7 @@ namespace Facepunch.Pool
 		[ConVar.Replicated( "pool_turn_time" )]
 		public static int TurnTime { get; set; } = 30;
 
+		private RealTimeUntil NextSecondTime;
 		private FastForward FastForwardHud;
 		private WinSummary WinSummaryHud;
 
@@ -205,26 +206,6 @@ namespace Facepunch.Pool
 			Round?.Start();
 		}
 
-		public async Task StartSecondTimer()
-		{
-			while ( true )
-			{
-				try
-				{
-					await Task.DelaySeconds( 1 );
-					OnSecond();
-				}
-				catch ( TaskCanceledException e )
-				{
-					break;
-				}
-				catch ( Exception e )
-				{
-					Log.Error( e.Message );
-				}
-			}
-		}
-
 		public override void DoPlayerNoclip( Client client )
 		{
 			// Do nothing. The player can't noclip in this mode.
@@ -237,8 +218,6 @@ namespace Facepunch.Pool
 
 		public override void PostLevelLoaded()
 		{
-			_ = StartSecondTimer();
-
 			if ( IsServer )
 			{
 				Cue = Rules.CreatePoolCue();
@@ -312,6 +291,12 @@ namespace Facepunch.Pool
 			Round?.OnTick();
 
 			Map.Physics.TimeScale = IsFastForwarding ? 5f : 1f;
+
+			if ( NextSecondTime )
+			{
+				NextSecondTime = 1f;
+				OnSecond();
+			}
 
 			if ( IsClient )
 			{
