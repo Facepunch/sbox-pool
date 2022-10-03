@@ -5,7 +5,7 @@
 		BaseSurface = null
 		AudioMaterial = null
 		Description = ""
-		Friction = 1
+		Friction = 0.4
 		Elasticity = 1
 		Density = 100
 		Thickness = 0

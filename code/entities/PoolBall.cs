@@ -104,7 +104,7 @@ namespace Facepunch.Pool
 
 			var worldOBB = CollisionBounds + worldPos;
 
-			foreach (var ball in All.OfType<PoolBall>())
+			foreach ( var ball in All.OfType<PoolBall>() )
 			{
 				if ( ball != this )
 				{
