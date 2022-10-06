@@ -18,10 +18,10 @@ namespace Facepunch.Pool
 		public ShotPowerLine ShotPowerLine { get; set; }
 		public ModelEntity GhostBall { get; private set; }
 
-		private float _cuePullBackOffset;
-		private float _lastPowerDistance;
-		private float _maxCuePitch = 17f;
-		private float _minCuePitch = 5f;
+		private float CuePullBackOffset;
+		private float LastPowerDistance;
+		private float MaxCuePitch = 17f;
+		private float MinCuePitch = 5f;
 
 		public void Reset()
 		{
@@ -72,7 +72,7 @@ namespace Facepunch.Pool
 					if ( Host.IsServer )
 						TakeShot( controller, whiteBall );
 
-					_cuePullBackOffset = 0f;
+					CuePullBackOffset = 0f;
 					IsMakingShot = false;
 					ShotPower = 0f;
 				}
@@ -83,7 +83,7 @@ namespace Facepunch.Pool
 			}
 
 			EnableDrawing = true;
-			Position = whiteBall.Position - Rotation.Forward * (1f + _cuePullBackOffset + (CuePitch * 0.04f));
+			Position = whiteBall.Position - Rotation.Forward * (1f + CuePullBackOffset + (CuePitch * 0.04f));
 
 			// Never interpolate just update its position immediately for everybody.
 			ResetInterpolation();
@@ -226,19 +226,19 @@ namespace Facepunch.Pool
 		{
 			var cursorPlaneEndPos = controller.EyePosition + Input.Cursor.Direction * 350f;
 			var distanceToCue = cursorPlaneEndPos.Distance( Position - Rotation.Forward * 100f );
-			var cuePullBackDelta = (_lastPowerDistance - distanceToCue) * Time.Delta * 20f;
+			var cuePullBackDelta = (LastPowerDistance - distanceToCue) * Time.Delta * 20f;
 
 			if ( !IsMakingShot )
 			{
-				_lastPowerDistance = 0f;
+				LastPowerDistance = 0f;
 				cuePullBackDelta = 0f;
 			}
 
-			_cuePullBackOffset = Math.Clamp( _cuePullBackOffset + cuePullBackDelta, 0f, 8f );
-			_lastPowerDistance = distanceToCue;
+			CuePullBackOffset = Math.Clamp( CuePullBackOffset + cuePullBackDelta, 0f, 8f );
+			LastPowerDistance = distanceToCue;
 
 			IsMakingShot = true;
-			ShotPower = _cuePullBackOffset.AsPercentMinMax( 0f, 8f );
+			ShotPower = CuePullBackOffset.AsPercentMinMax( 0f, 8f );
 		}
 
 		private bool UpdateAimDir( Player controller, Vector3 ballCenter )
@@ -264,9 +264,9 @@ namespace Facepunch.Pool
 
 			var aimRotation = Rotation.LookAt( AimDir, Vector3.Forward );
 
-			_cuePullBackOffset = _cuePullBackOffset.LerpTo( 0f, Time.Delta * 10f );
+			CuePullBackOffset = CuePullBackOffset.LerpTo( 0f, Time.Delta * 10f );
 
-			CuePitch = CuePitch.LerpTo( _minCuePitch + ((_maxCuePitch - _minCuePitch) * (1f - rollTrace.Fraction)), Time.Delta * 10f );
+			CuePitch = CuePitch.LerpTo( MinCuePitch + ((MaxCuePitch - MinCuePitch) * (1f - rollTrace.Fraction)), Time.Delta * 10f );
 			CueYaw = aimRotation.Yaw().Normalize( 0f, 360f );
 
 			if ( IsAuthority )
