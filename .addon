@@ -43,7 +43,8 @@
         "trigger": "Trigger",
         "ladder": "Ignore",
         "water": "Trigger",
-        "balls": "Collide"
+        "ball": "Collide",
+        "powerup": "Collide"
       },
       "Pairs": [
         {
@@ -76,8 +77,13 @@
           "b": "trigger"
         },
         {
-          "a": "trigger",
-          "b": "balls",
+          "a": "powerup",
+          "b": "powerup",
+          "r": "Ignore"
+        },
+        {
+          "a": "ball",
+          "b": "powerup",
           "r": "Trigger"
         }
       ]

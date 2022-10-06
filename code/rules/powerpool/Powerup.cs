@@ -11,10 +11,15 @@ namespace Facepunch.Pool
 
 		public virtual void OnStart( Player player )
 		{
-
+			
 		}
 
 		public virtual void OnFinish( Player player )
+		{
+
+		}
+
+		public virtual void OnSpawn( PowerupEntity entity )
 		{
 
 		}
