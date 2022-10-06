@@ -14,6 +14,11 @@ namespace Facepunch.Pool
 			
 		}
 
+		public virtual void OnTouch( Player player, PoolBall ball )
+		{
+
+		}
+
 		public virtual void OnFinish( Player player )
 		{
 

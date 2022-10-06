@@ -29,9 +29,11 @@ namespace Facepunch.Pool
 
 		public override void StartTouch( Entity other )
 		{
-			if ( other is PoolBall ball && ( ball.Type == PoolBallType.White || ball.Type == Game.Instance.CurrentPlayer.BallType ) )
+			var player = Game.Instance.CurrentPlayer;
+
+			if ( other is PoolBall ball && ( ball.Type == PoolBallType.White || ball.Type == player.BallType ) )
 			{
-				Log.Info( "Hit powerup: " + Powerup.Name );
+				Powerup.OnTouch( player, ball );
 			}
 
 			base.StartTouch( other );
