@@ -122,6 +122,7 @@ namespace Facepunch.Pool
 				ShotPowerLine = new ShotPowerLine();
 
 			var trace = Trace.Ray( whiteBall.Position, whiteBall.Position + AimDir * 1000f )
+				.WithoutTags( "powerup" )
 				.Ignore( whiteBall )
 				.Ignore( this )
 				.Run();
