@@ -325,6 +325,8 @@ namespace Facepunch.Pool
 
 			if ( Game.Rules.IsRanked )
 				GameServices.StartGame();
+
+			Game.Rules.Start();
 		}
 
 		private void DoPlayerPotBall( Player player, PoolBall ball, BallPotType type )
@@ -388,6 +390,8 @@ namespace Facepunch.Pool
 			Game.Instance.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner, loser.Elo.Rating, loser.Elo.Delta );
 
 			Game.Instance.ChangeRound( new StatsRound() );
+
+			Game.Rules.Finish();
 		}
 
 		private PoolBall FindBallLikelyToPot()
