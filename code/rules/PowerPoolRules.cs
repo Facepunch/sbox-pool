@@ -20,6 +20,12 @@ namespace Facepunch.Pool
 		{
 			if ( !IsPlaying ) return;
 
+			if ( Entity.All.OfType<PowerupEntity>().Count() > 2 )
+			{
+				NextSpawnPowerup = Rand.Float( 20f, 40f );
+				return;
+			}
+
 			if ( NextSpawnPowerup )
 			{
 				var powerup = new PowerupEntity();
