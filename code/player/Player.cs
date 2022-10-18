@@ -19,6 +19,8 @@ namespace Facepunch.Pool
 		public bool DidHitOwnBall { get; set; }
 		public bool DidPotBall { get; set; }
 
+		[ClientInput] public Vector3 CursorDirection { get; set; }
+
 		public int BallsLeft
 		{
 			get
@@ -153,6 +155,13 @@ namespace Facepunch.Pool
 
 			TimeSinceWhiteStruck = 0;
 			HasStruckWhiteBall = true;
+		}
+
+		public override void BuildInput()
+		{
+			CursorDirection = Mouse.Visible ? Screen.GetDirection( Mouse.Position ) : CurrentView.Rotation.Forward;
+
+			base.BuildInput();
 		}
 
 		public override void Simulate( Client client )
