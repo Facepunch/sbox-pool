@@ -89,28 +89,13 @@
       ]
     },
     "GameSettings": {
-      "pool_game_rules": {
-        "DisplayType": "Choice",
-        "Choices": [
-          {
-            "Value": "rules_regular",
-            "Name": "Regular"
-          },
-          {
-            "Value": "rules_power_pool",
-            "Name": "Power Pool"
-          }
-        ],
-        "ConVarName": "pool_game_rules",
-        "DisplayName": "Game Rules",
-        "DefaultValue": "rules_regular"
-      },
       "pool_turn_time": {
         "DisplayType": "Integer",
         "Choices": [],
         "ConVarName": "pool_turn_time",
         "DisplayName": "Turn Time",
         "DefaultValue": "30",
+        "Description": "",
         "Maximum": 60
       }
     }

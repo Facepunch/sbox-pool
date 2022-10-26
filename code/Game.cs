@@ -37,9 +37,6 @@ namespace Facepunch.Pool
 
 		[Net] private BaseGameRules InternalGameRules { get; set; }
 
-		[ConVar.Replicated( "pool_game_rules" )]
-		public static string GameRulesConVar { get; set; } = "rules_regular";
-
 		[ConVar.Replicated( "pool_turn_time" )]
 		public static int TurnTime { get; set; } = 30;
 
@@ -52,7 +49,7 @@ namespace Facepunch.Pool
 			if ( IsServer )
 			{
 				Hud = new();
-				LoadGameRules( GameRulesConVar );
+				LoadGameRules( "rules_regular" );
 				ChangeRound( new LobbyRound() );
 			}
 		}
