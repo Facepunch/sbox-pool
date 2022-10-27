@@ -7,32 +7,9 @@ using System.Threading.Tasks;
 
 namespace Facepunch.Pool
 {
-	[Library]
-	public partial class Hud : HudEntity<RootPanel>
+	[UseTemplate]
+	public partial class Hud : RootPanel
 	{
-		public Panel Header { get; private set; }
-		public Panel Footer { get; private set; }
 
-		public Hud()
-		{
-			if ( !IsClient )
-				return;
-
-			RootPanel.StyleSheet.Load( "/ui/Hud.scss" );
-
-			RootPanel.AddChild<RoundInfo>();
-			RootPanel.AddChild<VoiceList>();
-			RootPanel.AddChild<ChatBox>();
-
-			Header = RootPanel.Add.Panel( "header" );
-			Header.AddChild<PlayerDisplay>();
-
-			Footer = RootPanel.Add.Panel( "footer" );
-			Footer.AddChild<ToastList>();
-			Footer.AddChild<BallHistory>();
-
-			RootPanel.AddChild<LoadingScreen>();
-			RootPanel.AddChild<CursorController>();
-		}
 	}
 }

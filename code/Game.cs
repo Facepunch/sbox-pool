@@ -20,7 +20,6 @@ namespace Facepunch.Pool
 		public Player PreviousWinner { get; set; }
 		public Player PreviousLoser { get; set; }
 		public List<PoolBall> AllBalls { get; private set; }
-		public Hud Hud { get; set; }
 
 		public static Game Instance => Current as Game;
 		public static BaseGameRules Rules => Instance?.InternalGameRules;
@@ -48,9 +47,13 @@ namespace Facepunch.Pool
 		{
 			if ( IsServer )
 			{
-				Hud = new();
 				LoadGameRules( "rules_regular" );
 				ChangeRound( new LobbyRound() );
+			}
+			else
+			{
+				Local.Hud?.Delete( true );
+				Local.Hud = new Hud();
 			}
 		}
 
@@ -268,7 +271,9 @@ namespace Facepunch.Pool
 			}
 
 			if ( newValue )
+			{
 				FastForwardHud = Local.Hud.AddChild<FastForward>();
+			}
 		}
 
 		private void LoadGameRules( string rules )
