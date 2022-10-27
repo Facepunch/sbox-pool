@@ -1,8 +1,6 @@
-﻿
-using Sandbox;
+﻿using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
-using System;
 
 namespace Facepunch.Pool
 {
@@ -13,7 +11,7 @@ namespace Facepunch.Pool
 		public Panel Circle { get; set; }
 		public Panel Icon { get; set; }
 
-		private float _endTime;
+		private float EndTime;
 
 		public ToastItem()
 		{
@@ -33,12 +31,12 @@ namespace Facepunch.Pool
 			else
 				Circle.AddClass( "hidden" );
 
-			_endTime = Time.Now + 3f;
+			EndTime = Time.Now + 3f;
 		}
 
 		public override void Tick()
 		{
-			if ( !IsDeleting && Time.Now >= _endTime )
+			if ( !IsDeleting && Time.Now >= EndTime )
 				Delete();
 		}
 	}

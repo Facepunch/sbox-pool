@@ -1,10 +1,7 @@
-﻿
-using Sandbox;
+﻿using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
-using Sandbox.UI.Tests;
 using System;
-using System.Collections.Generic;
 
 namespace Facepunch.Pool
 {
