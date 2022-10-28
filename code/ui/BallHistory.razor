@@ -1,0 +1,72 @@
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
+
+@namespace Facepunch.Pool
+@attribute [StyleSheet( "/ui/BallHistory.scss" )]
+@inherits Panel
+
+<root class="@GetHiddenClass()">
+    @for (var i = 0; i < 15; i++)
+    {
+        if ( i < Items.Count ) {
+            <BallHistoryItem BallType=@Items[i].BallType BallNumber=@Items[i].BallNumber></BallHistoryItem>
+        } else {
+            <BallHistoryItem BallType=@PoolBallType.White></BallHistoryItem>
+        }
+    }
+</root>
+
+@code
+{
+    public static BallHistory Current;
+
+    public BallHistory()
+    {
+        Current = this;
+    }
+
+    private List<BallHistoryItem> Items { get; set; } = new();
+
+    public void AddBall( PoolBall ball )
+    {
+        Items.Add( new BallHistoryItem
+        {
+            BallType = ball.Type,
+            BallNumber = ball.Number
+        } );
+    }
+
+    public void AddByType( PoolBallType type, PoolBallNumber number )
+    {
+        Items.Add( new BallHistoryItem
+        {
+            BallType = type,
+            BallNumber = number
+        } );
+    }
+
+    public void Clear()
+    {
+        Items.Clear();
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine( Items.Count );
+    }
+
+    protected override void OnAfterTreeRender( bool firstTime )
+    {
+        Game.Instance.UpdatePotHistory();
+        base.OnAfterTreeRender( firstTime );
+    }
+
+    private string GetHiddenClass()
+    {
+        if ( Game.Instance.Round is not PlayRound ) return "hidden";
+        return string.Empty;
+    }
+}
