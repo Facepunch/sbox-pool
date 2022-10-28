@@ -101,7 +101,10 @@ namespace Facepunch.Pool
 			HideWinSummary();
 
 			WinSummaryHud = Local.Hud.AddChild<WinSummary>();
-			WinSummaryHud.Update( outcome, opponent, rating, delta );
+			WinSummaryHud.Outcome = outcome;
+			WinSummaryHud.Opponent = opponent;
+			WinSummaryHud.Rating = rating;
+			WinSummaryHud.Delta = delta;
 		}
 
 		[ClientRpc]

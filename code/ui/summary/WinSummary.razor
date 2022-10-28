@@ -1,0 +1,26 @@
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+
+@namespace Facepunch.Pool
+@attribute [StyleSheet( "/ui/summary/WinSummary.scss" )]
+@inherits Panel
+
+<root>
+    <div class="background"></div>
+
+    <div class="container">
+        <div class="win-header @(Outcome == EloOutcome.Win ? "win" : "loss")"></div>
+        <OpponentDisplay Outcome=@Outcome Player=@Opponent></OpponentDisplay>
+        @if (Game.Rules.IsRanked) <RankProgress Rating=@Rating Delta=@Delta></RankProgress>
+    </div>
+</root>
+
+@code
+{
+    public EloOutcome Outcome { get; set; }
+    public Player Opponent { get; set; }
+    public int Rating { get; set; }
+    public int Delta { get; set; }
+}

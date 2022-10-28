@@ -27,7 +27,7 @@
         height: 80%;
         max-width: 960px;
         justify-content: center;
-        // Header bar
+
         .win-header {
             background-size: 100%;
             position: relative;
@@ -42,8 +42,8 @@
                 background-image: url(/ui/pool/loser-text.png);
             }
         }
-        // Opponent Section
-        opponentdisplay {
+
+        OpponentDisplay {
             width: 100%;
             display: flex;
             flex-direction: row;
@@ -122,8 +122,8 @@
                 }
             }
         }
-        // Rank Section
-        rankprogress {
+
+        RankProgress {
             align-items: center;
             background-color: #1A202B;
             border-radius: 50%;
@@ -152,8 +152,6 @@
                     left: 0;
                     z-index: 2;
                     opacity: 0.5;
-                    // Same as above, this needs border-radius but it doesnt work. Min-width fixes it?
-                    //min-width: 10px;
                 }
 
                 .rank-delta {
@@ -167,9 +165,7 @@
                 }
             }
 
-
-
-            .leftrank {
+            .left-rank {
                 align-items: center;
                 justify-content: center;
                 width: 40px;
@@ -208,11 +204,12 @@
                     color: #fff;
                     font-weight: bold;
                     position: absolute;
+                    font-size: 16px;
                     text-shadow: 0 1px 0 rgba(#000,0.7);
                 }
             }
 
-            .rightrank {
+            .right-rank {
                 align-items: center;
                 justify-content: center;
                 width: 40px;
@@ -250,6 +247,7 @@
                 .level {
                     color: #fff;
                     font-weight: bold;
+                    font-size: 16px;
                     position: absolute;
                     text-shadow: 0 1px 0 rgba(#000,0.7);
                 }

@@ -57,6 +57,6 @@
 
 	protected override int BuildHash()
 	{
-		return HashCode.Combine( Player, Player.BallType, Player.BallsLeft, Player.Elo.GetRank(), Player.Elo.GetLevel() );
+		return HashCode.Combine( Player, Player.BallType, Player.BallsLeft, Player.Elo.GetRank(), Player.Elo.GetLevel(), Player.IsTurn );
 	}
 }
