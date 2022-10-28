@@ -1,0 +1,62 @@
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@namespace Facepunch.Pool
+@attribute [StyleSheet( "/ui/PlayerDisplay.scss" )]
+@inherits Panel
+
+@if (!Player.IsValid()) return;
+
+<root class="@GetActiveClass() @GetHiddenClass()">
+	<div class="player-container">
+		<img class="avatar" src="avatar:@(Player.Client.PlayerId)" />
+		<label class="name">@Player.Client.Name</label>
+
+		<div class="division @GetRankClass() @(IsRankHidden() ? "hidden" : string.Empty)">
+			<label class="rank @GetRankClass()">@Player.Elo.GetLevel()</label>
+		</div>
+	</div>
+
+	<div class="score-container">
+		<div class="ball @(GetBallClass())"></div>
+	</div>
+</root>
+
+@code
+{
+	public Player Player { get; set; }
+
+	private string GetRankClass()
+	{
+		return Player.Elo.GetRank().ToString().ToLower();
+	}
+
+	private bool IsRankHidden()
+	{
+		return !Game.Rules?.IsRanked ?? true;
+	}
+
+	private string GetActiveClass()
+	{
+		return Player.IsTurn ? "active" : string.Empty;
+	}
+
+	private string GetHiddenClass()
+	{
+		return Player.IsValid() ? string.Empty : "hidden";
+	}
+
+	private string GetBallClass()
+	{
+		if ( Player.BallType == PoolBallType.Spots ) return "spots";
+		if ( Player.BallType == PoolBallType.Stripes ) return "stripes";
+		if ( Player.BallsLeft == 0 ) return "black";
+		return string.Empty;
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( Player, Player.BallType, Player.BallsLeft, Player.Elo.GetRank(), Player.Elo.GetLevel() );
+	}
+}
