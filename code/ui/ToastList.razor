@@ -1,0 +1,25 @@
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using System;
+
+@namespace Facepunch.Pool
+@attribute [StyleSheet( "/ui/ToastList.scss" )]
+@inherits Panel
+
+@code
+{
+    public static ToastList Current { get; private set; }
+
+    public ToastList()
+    {
+        Current = this;
+    }
+
+    public void AddItem( Player player, string text, string iconClass = "" )
+    {
+        var item = AddChild<ToastItem>();
+        item.Player = player;
+        item.Text = text;
+        item.Icon = iconClass;
+    }
+}
