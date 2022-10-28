@@ -1,6 +1,14 @@
-﻿<link rel="stylesheet" href="./Hud.scss" />
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
 
-<div>
+@namespace Facepunch.Pool
+@attribute [StyleSheet( "/ui/Hud.scss" )]
+@inherits RootPanel
+
+<root>
     <RoundInfo></RoundInfo>
     <VoiceList></VoiceList>
     <ChatBox></ChatBox>
@@ -16,4 +24,4 @@
 
     <LoadingScreen></LoadingScreen>
     <CursorController></CursorController>
-</div>
+</root>
