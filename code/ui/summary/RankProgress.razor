@@ -1,0 +1,59 @@
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+
+@namespace Facepunch.Pool
+@attribute [StyleSheet( "/ui/summary/WinSummary.scss" )]
+@inherits Panel
+
+<root>
+	<RankIcon class="left-rank" Rank=@Elo.GetRank( PreviousScore ) Level=@Elo.GetLevel( PreviousScore )></RankIcon>
+	<RankIcon class="right-rank" Rank=@Elo.GetRank( NextScore ) Level=@Elo.GetLevel( NextScore )></RankIcon>
+
+	<div class="rank-bg">
+		<div class="rank-progress" @ref="BarProgress"></div>
+		<div class="rank-delta" @ref="BarDelta"></div>
+	</div>
+</root>
+
+@code
+{
+	public int Rating { get; set; }
+	public int Delta { get; set; }
+
+	private int PreviousScore { get; set; }
+	private int NextScore { get; set; }
+	private int Progress { get; set; }
+
+	private Panel BarProgress { get; set; }
+	private Panel BarDelta { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		PreviousScore = Math.Max( Rating - Delta, 0 );
+		NextScore = Elo.GetNextLevelRating( PreviousScore );
+		Progress = 100 - (NextScore - PreviousScore);
+
+		base.OnParametersSet();
+	}
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		var progress = Progress;
+		var delta = Delta;
+
+		if ( delta < 0 ) progress += delta;
+
+		BarProgress.Style.Width = Length.Percent( progress );
+		BarDelta.Style.Width = Length.Percent( Math.Min( Math.Abs( delta ), 100 - progress ) );
+		BarDelta.SetClass( "loss", delta < 0 );
+
+		base.OnAfterTreeRender( firstTime );
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( Rating, Delta );
+	}
+}

@@ -1,0 +1,48 @@
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using System;
+
+@namespace Facepunch.Pool
+@attribute [StyleSheet( "/ui/ToastList.scss" )]
+@inherits Panel
+
+<root>
+	<img class="avatar" src="avatar:@Player.Client.PlayerId" />
+	<label class="text">@Text</label>
+	<div class="circle">
+		<div class="icon @GetIconClass()"></div>
+	</div>
+</root>
+
+@code
+{
+	public Player Player { get; set; }
+	public string Text { get; set; }
+	public string Icon { get; set; }
+
+	private float EndTime { get; set; }
+
+	public string GetIconClass()
+	{
+		if ( !string.IsNullOrEmpty( Icon ) )
+			return Icon;
+		else
+			return "hidden";
+	}
+
+	public override void Tick()
+	{
+		if ( !IsDeleting && Time.Now >= EndTime )
+			Delete();
+	}
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( firstTime )
+		{
+			EndTime = Time.Now + 3f;
+		}
+
+		base.OnAfterTreeRender( firstTime );
+	}
+}

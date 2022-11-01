@@ -20,7 +20,6 @@ namespace Facepunch.Pool
 		public Player PreviousWinner { get; set; }
 		public Player PreviousLoser { get; set; }
 		public List<PoolBall> AllBalls { get; private set; }
-		public Hud Hud { get; set; }
 
 		public static Game Instance => Current as Game;
 		public static BaseGameRules Rules => Instance?.InternalGameRules;
@@ -37,9 +36,6 @@ namespace Facepunch.Pool
 
 		[Net] private BaseGameRules InternalGameRules { get; set; }
 
-		[ConVar.Replicated( "pool_game_rules" )]
-		public static string GameRulesConVar { get; set; } = "rules_regular";
-
 		[ConVar.Replicated( "pool_turn_time" )]
 		public static int TurnTime { get; set; } = 30;
 
@@ -51,9 +47,13 @@ namespace Facepunch.Pool
 		{
 			if ( IsServer )
 			{
-				Hud = new();
-				LoadGameRules( GameRulesConVar );
+				LoadGameRules( "rules_regular" );
 				ChangeRound( new LobbyRound() );
+			}
+			else
+			{
+				Local.Hud?.Delete( true );
+				Local.Hud = new Hud();
 			}
 		}
 
@@ -101,7 +101,10 @@ namespace Facepunch.Pool
 			HideWinSummary();
 
 			WinSummaryHud = Local.Hud.AddChild<WinSummary>();
-			WinSummaryHud.Update( outcome, opponent, rating, delta );
+			WinSummaryHud.Outcome = outcome;
+			WinSummaryHud.Opponent = opponent;
+			WinSummaryHud.Rating = rating;
+			WinSummaryHud.Delta = delta;
 		}
 
 		[ClientRpc]
@@ -271,7 +274,9 @@ namespace Facepunch.Pool
 			}
 
 			if ( newValue )
+			{
 				FastForwardHud = Local.Hud.AddChild<FastForward>();
+			}
 		}
 
 		private void LoadGameRules( string rules )

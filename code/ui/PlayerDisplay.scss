@@ -62,13 +62,11 @@
             transition: all 0.2s ease;
             width: 100%;
 
-
             .time-remaining-progress {
                 background-color: #43AC4E;
                 border-radius: 8px;
                 height: 8px;
                 transition: all 0.2s ease;
-                width: 100%;
             }
         }
 
@@ -180,9 +178,9 @@
 
             .division {
                 align-items: center;
+                justify-content: center;
                 background-size: 100%;
                 display: flex;
-                justify-content: center;
                 height: 32px;
                 width: 32px;
 
@@ -208,7 +206,7 @@
 
                 .rank {
                     color: #fff;
-                    font-size: 14px;
+                    font-size: 16px;
                     text-shadow: 0 1px 2px rgba(#000,0.2);
                 }
 
@@ -216,8 +214,6 @@
                     display: none;
                 }
             }
-
-
 
             .level {
                 color: white;
@@ -264,8 +260,6 @@
             display: none;
         }
     }
-
-
 
     &.hidden {
         display: none;
