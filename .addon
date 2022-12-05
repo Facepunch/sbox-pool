@@ -3,6 +3,7 @@
   "Type": "game",
   "Org": "facepunch",
   "Ident": "pool",
+  "Tags": "",
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
@@ -98,6 +99,10 @@
         "Description": "",
         "Maximum": 60
       }
-    }
+    },
+    "DefaultLeaderboards": null,
+    "Summary": "A classic pub game where your skill is determined by your blood-alcohol content.\r\n",
+    "Description": "A classic pub game where your skill is determined by your blood-alcohol content.\r\n",
+    "Public": true
   }
 }

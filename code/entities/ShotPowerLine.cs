@@ -22,9 +22,9 @@ namespace Facepunch.Pool
 		{
 			if ( IsEnabled )
 			{
-				Render.SetupLighting( sceneObject );
+				var vertexBuffer = new VertexBuffer();
+				vertexBuffer.Init( true );
 
-				var vertexBuffer = Render.GetDynamicVB( true );
 				var widthOffset = Vector3.Cross( ( EndPos - Position).Normal, Vector3.Up ) * Width;
 				var powerFraction = (ShotPower / 100f);
 				var offset = (EndPos - Position);
@@ -36,11 +36,11 @@ namespace Facepunch.Pool
 
 				vertexBuffer.AddQuad( a, b, c, d );
 
-				Render.Attributes.Set( "Opacity", 0.5f + ( ( 0.5f / 100f ) * powerFraction ) );
-				Render.Attributes.Set( "Color", Color );
+				var attributes = new RenderAttributes();
+				attributes.Set( "Opacity", 0.5f + ( ( 0.5f / 100f ) * powerFraction ) );
+				attributes.Set( "Color", Color );
 
-				vertexBuffer.Draw( LineMaterial );
-
+				vertexBuffer.Draw( LineMaterial, attributes );
 				vertexBuffer.Clear();
 
 				var circleSize = 1f + (5f * powerFraction);
@@ -52,9 +52,9 @@ namespace Facepunch.Pool
 
 				vertexBuffer.AddQuad( a, b, c, d );
 
-				Render.Attributes.Set( "Opacity", powerFraction );
+				attributes.Set( "Opacity", powerFraction );
 
-				vertexBuffer.Draw( PowerCircleMaterial );
+				vertexBuffer.Draw( PowerCircleMaterial, attributes );
 			}
 		}
 	}

@@ -1,9 +1,4 @@
 ﻿using Sandbox;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facepunch.Pool
 {
@@ -18,8 +13,8 @@ namespace Facepunch.Pool
 		{
 			if ( IsEnabled  )
 			{
-				var vb = Render.GetDynamicVB();
-
+				var vb = new VertexBuffer();
+				vb.Init( true );
 				vb.AddCube( Position + RenderBounds.Center, RenderBounds.Size.WithZ( 1f ), Rotation.Identity );
 				vb.Draw( Material );
 			}
