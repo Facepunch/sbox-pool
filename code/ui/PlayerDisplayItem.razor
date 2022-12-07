@@ -10,7 +10,7 @@
 
 <root class="@GetActiveClass() @GetHiddenClass()">
 	<div class="player-container">
-		<img class="avatar" src="avatar:@(Player.Client.PlayerId)" />
+		<img class="avatar" src="avatar:@(Player.Client.SteamId)" />
 		<label class="name">@Player.Client.Name</label>
 
 		<div class="division @GetRankClass() @(IsRankHidden() ? "hidden" : string.Empty)">

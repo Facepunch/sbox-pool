@@ -1,8 +1,6 @@
 ﻿using Sandbox;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Facepunch.Pool
@@ -13,9 +11,10 @@ namespace Facepunch.Pool
 		public PoolBallType Type;
 	}
 
-	[Library( "pool", Title = "Pool" )]
-	partial class Game : Sandbox.Game
+	partial class Game : GameManager
 	{
+		private PoolCamera Camera { get; set; }
+
 		public TriggerWhiteArea WhiteArea { get; set; }
 		public Player PreviousWinner { get; set; }
 		public Player PreviousLoser { get; set; }
@@ -43,18 +42,22 @@ namespace Facepunch.Pool
 		private FastForward FastForwardHud;
 		private WinSummary WinSummaryHud;
 
-		public Game()
+		public override void Spawn()
 		{
-			if ( IsServer )
-			{
-				LoadGameRules( "rules_regular" );
-				ChangeRound( new LobbyRound() );
-			}
-			else
-			{
-				Local.Hud?.Delete( true );
-				Local.Hud = new Hud();
-			}
+			LoadGameRules( "rules_regular" );
+			ChangeRound( new LobbyRound() );
+
+			base.Spawn();
+		}
+
+		public override void ClientSpawn()
+		{
+			Local.Hud?.Delete( true );
+			Local.Hud = new Hud();
+
+			Camera = new();
+
+			base.ClientSpawn();
 		}
 
 		public async Task RespawnBallAsync( PoolBall ball, bool shouldAnimate = false )
@@ -214,11 +217,6 @@ namespace Facepunch.Pool
 			// Do nothing. The player can't noclip in this mode.
 		}
 
-		public override void DoPlayerSuicide( Client client )
-		{
-			// Do nothing. The player can't suicide in this mode.
-		}
-
 		public override void PostLevelLoaded()
 		{
 			if ( IsServer )
@@ -288,6 +286,12 @@ namespace Facepunch.Pool
 		{
 			CheckMinimumPlayers();
 			Round?.OnSecond();
+		}
+
+		[Event.Client.Frame]
+		private void OnFrame()
+		{
+			Camera?.Update();
 		}
 
 		[Event.Tick]

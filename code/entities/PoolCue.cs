@@ -210,7 +210,7 @@ namespace Facepunch.Pool
 
 		private void HandleWhiteBallPlacement( Player controller, PoolBall whiteBall )
 		{
-			var cursorTrace = Trace.Ray( controller.EyePosition, controller.EyePosition + controller.CursorDirection * 1000f )
+			var cursorTrace = Trace.Ray( controller.CameraPosition, controller.CameraPosition + controller.CursorDirection * 1000f )
 				.WorldOnly()
 				.Run();
 
@@ -225,7 +225,7 @@ namespace Facepunch.Pool
 
 		private void HandlePowerSelection( Player controller )
 		{
-			var cursorPlaneEndPos = controller.EyePosition + controller.CursorDirection * 350f;
+			var cursorPlaneEndPos = controller.CameraPosition + controller.CursorDirection * 350f;
 			var distanceToCue = cursorPlaneEndPos.Distance( Position - Rotation.Forward * 100f );
 			var cuePullBackDelta = (LastPowerDistance - distanceToCue) * Time.Delta * 20f;
 
@@ -247,7 +247,7 @@ namespace Facepunch.Pool
 			if ( IsMakingShot ) return true;
 
 			var tablePlane = new Plane( ballCenter, Vector3.Up );
-			var hitPos = tablePlane.Trace( new Ray( controller.EyePosition, controller.CursorDirection ), true );
+			var hitPos = tablePlane.Trace( new Ray( controller.CameraPosition, controller.CursorDirection ), true );
 
 			if ( !hitPos.HasValue ) return false;
 

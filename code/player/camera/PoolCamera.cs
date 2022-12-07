@@ -3,29 +3,18 @@ using System;
 
 namespace Facepunch.Pool
 {
-	public partial class PoolCamera : CameraMode
+	public partial class PoolCamera 
 	{
-		public override void Activated()
+		public void Update()
 		{
 			if ( Local.Pawn is Player player )
 			{
-				Position = player.Position;
-				Rotation = player.Rotation;
+				Camera.FieldOfView = Screen.CreateVerticalFieldOfView( 15f );
+				Camera.Position = Camera.Position.LerpTo( player.Position, Time.Delta );
+				Camera.Rotation = player.Rotation;
 			}
 
-			base.Activated();
-		}
-
-		public override void Update()
-		{
-			if ( Local.Pawn is Player player )
-			{
-				FieldOfView = 20f;
-				Position = Position.LerpTo( player.Position, Time.Delta );
-				Rotation = player.Rotation;
-			}
-
-			Viewer = null;
+			Camera.FirstPersonViewer = null;
 		}
 	}
 }

@@ -16,7 +16,7 @@
 	{
 		if ( Game.Instance == null ) return;
 			
-		var isHidden = (Local.Pawn is Player player && player.Camera != null);
+		var isHidden = (Local.Pawn is Player player);
 		var round = Game.Instance.Round;
 
 		if ( round is PlayRound )

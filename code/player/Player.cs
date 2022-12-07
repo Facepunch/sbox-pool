@@ -20,6 +20,7 @@ namespace Facepunch.Pool
 		public bool DidPotBall { get; set; }
 
 		[ClientInput] public Vector3 CursorDirection { get; set; }
+		[ClientInput] public Vector3 CameraPosition { get; set; }
 
 		public int BallsLeft
 		{
@@ -34,23 +35,9 @@ namespace Facepunch.Pool
 			}
 		}
 
-		public PoolCamera Camera
-		{
-			get => Components.Get<PoolCamera>();
-			set
-			{
-				var current = Camera;
-				if ( current == value ) return;
-
-				Components.RemoveAny<PoolCamera>();
-				Components.Add( value );
-			}
-		}
-
 		public Player()
 		{
 			Elo = new();
-			Camera = new PoolCamera();
 			Transmit = TransmitType.Always;
 		}
 
@@ -159,7 +146,8 @@ namespace Facepunch.Pool
 
 		public override void BuildInput()
 		{
-			CursorDirection = Mouse.Visible ? Screen.GetDirection( Mouse.Position ) : CurrentView.Rotation.Forward;
+			CursorDirection = Mouse.Visible ? Screen.GetDirection( Mouse.Position ) : Camera.Rotation.Forward;
+			CameraPosition = Camera.Position;
 
 			base.BuildInput();
 		}
