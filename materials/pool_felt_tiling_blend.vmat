@@ -2,9 +2,12 @@
 
 Layer0
 {
-	shader "blend.vfx"
+	shader "shaders/blendable.shader"
 
 	F_MULTIBLEND 1 // 2 Layers
+
+	g_flDirectionalLightmapMinZ "0.000"
+	g_flDirectionalLightmapStrength "0.000"
 
 	//---- Color ----
 	g_flModelTintAmount "1.000"
@@ -16,23 +19,15 @@ Layer0
 	//---- Fog ----
 	g_bFogEnabled "1"
 
-	//---- Lighting ----
-	g_flDirectionalLightmapMinZ "0.050"
-	g_flDirectionalLightmapStrength "1.000"
-
-	//---- Material ----
-	TextureColor "textures/pool/pool_felt_a_color.tga"
-	TextureTintMask "materials/default/default.tga"
-
 	//---- Material A ----
 	g_flTintColorA "[1.000000 1.000000 1.000000 0.000000]"
 	TextureAmbientOcclusionA "textures/pool/pool_felt_a_ao.tga"
-	TextureBlendMaskA "textures/pool/fabric_mask.tga"
+	TextureBlendMaskA "materials/default/default_blend.tga"
 	TextureColorA "textures/pool/pool_felt_a_color.tga"
 	TextureMetalnessA "[0.000000 0.000000 0.000000 0.000000]"
 	TextureNormalA "textures/pool/pool_felt_a_normal.tga"
 	TextureRoughnessA "textures/pool/pool_felt_a_rough.tga"
-	TextureTintMaskA "textures/pool/pool_felt_a_mask.tga"
+	TextureTintMaskA "materials/default/default.tga"
 
 	//---- Material B ----
 	g_flBlendSoftnessB "0.500"
@@ -44,19 +39,12 @@ Layer0
 	TextureMetalnessB "materials/default/default_metal.tga"
 	TextureNormalB "textures/pool/fabric_worn_normal.tga"
 	TextureRoughnessB "textures/pool/fabric_worn_rough.tga"
-	TextureTintMaskB "textures/pool/fabric_tint_mask.tga"
+	TextureTintMaskB "materials/default/default.tga"
 
 	//---- Texture Coordinates ----
 	g_nScaleTexCoordUByModelScaleAxis "0"
 	g_nScaleTexCoordVByModelScaleAxis "0"
-	g_vTexCoordOffset "[0.500 1.000]"
-	g_vTexCoordScale "[3.000 3.000]"
+	g_vTexCoordOffset "[0.000 0.000]"
+	g_vTexCoordScale "[1.000 1.000]"
 	g_vTexCoordScrollSpeed "[0.000 0.000]"
-
-	SystemAttributes
-	{
-		WorldMappingWidth "128"
-		WorldMappingHeight "128"
-		PhysicsSurfaceProperties "pool.table"
-	}
 }
