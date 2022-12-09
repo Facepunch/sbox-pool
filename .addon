@@ -14,7 +14,6 @@
   ],
   "HasCode": true,
   "CodePath": "code",
-  "RootNamespace": "Facepunch.Pool",
   "Metadata": {
     "MapList": [
       "pool_lounge_v2"

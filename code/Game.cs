@@ -50,6 +50,11 @@ namespace Facepunch.Pool
 			base.Spawn();
 		}
 
+		public Game()
+		{
+			Current = this;
+		}
+
 		public override void ClientSpawn()
 		{
 			Local.Hud?.Delete( true );
