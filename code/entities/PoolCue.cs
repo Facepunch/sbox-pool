@@ -44,9 +44,9 @@ namespace Facepunch.Pool
 			Transmit = TransmitType.Always;
 		}
 
-		public override void Simulate( Client client )
+		public override void Simulate( IClient client )
 		{
-			var whiteBall = Game.Instance.WhiteBall;
+			var whiteBall = PoolGame.Entity.WhiteBall;
 			
 			EnableDrawing = false;
 
@@ -69,7 +69,7 @@ namespace Facepunch.Pool
 				}
 				else
 				{
-					if ( Host.IsServer )
+					if ( Game.IsServer )
 						TakeShot( controller, whiteBall );
 
 					CuePullBackOffset = 0f;
@@ -94,9 +94,9 @@ namespace Facepunch.Pool
 		[Event( EventType.ClientTick )]
 		private void Tick()
 		{
-			var whiteBall = Game.Instance.WhiteBall;
+			var whiteBall = PoolGame.Entity.WhiteBall;
 
-			if ( Host.IsClient )
+			if ( Game.IsClient )
 			{
 				if ( ShotPowerLine != null )
 					ShotPowerLine.IsEnabled = false;
@@ -184,9 +184,9 @@ namespace Facepunch.Pool
 
 		private void ShowWhiteArea( bool shouldShow )
 		{
-			if ( Host.IsServer ) return;
+			if ( Game.IsServer ) return;
 
-			var whiteArea = Game.Instance.WhiteArea;
+			var whiteArea = PoolGame.Entity.WhiteArea;
 
 			if ( whiteArea != null && whiteArea.IsValid() )
 				whiteArea.Quad.IsEnabled = shouldShow;
@@ -194,7 +194,7 @@ namespace Facepunch.Pool
 
 		private void TakeShot( Player controller, PoolBall whiteBall )
 		{
-			Host.AssertServer();
+			Game.AssertServer();
 
 			if ( ShotPower >= 5f )
 			{
@@ -214,7 +214,7 @@ namespace Facepunch.Pool
 				.WorldOnly()
 				.Run();
 
-			var whiteArea = Game.Instance.WhiteArea;
+			var whiteArea = PoolGame.Entity.WhiteArea;
 			var whiteAreaWorldOBB = whiteArea.CollisionBounds.ToWorldSpace( whiteArea );
 
 			whiteBall.TryMoveTo( cursorTrace.EndPosition, whiteAreaWorldOBB );

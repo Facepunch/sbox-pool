@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using Sandbox.Diagnostics;
 using Sandbox.UI;
 using System;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace Facepunch.Pool
 					return false;
 			}
 
-			if ( Game.Instance.GetBallPlayer( this ) == player )
+			if ( PoolGame.Entity.GetBallPlayer( this ) == player )
 				return true;
 
 			if ( Type == PoolBallType.Black && player.BallsLeft == 0 )
@@ -141,7 +142,7 @@ namespace Facepunch.Pool
 			if ( !IsAnimating )
 			{
 				LastPocket = pocket;
-				Game.Instance.Round?.OnBallEnterPocket( this, pocket );
+				PoolGame.Entity.Round?.OnBallEnterPocket( this, pocket );
 			}
 		}
 
@@ -150,11 +151,11 @@ namespace Facepunch.Pool
 			// Our last striker is the one responsible for this collision.
 			if ( eventData.Other.Entity is PoolBall other )
 			{
-				LastStriker = Game.Instance.CurrentPlayer;
-				Game.Instance.Round?.OnBallHitOtherBall( this, other );
+				LastStriker = PoolGame.Entity.CurrentPlayer;
+				PoolGame.Entity.Round?.OnBallHitOtherBall( this, other );
 
 				var sound = PlaySound( "ball-collide" );
-				sound.SetPitch( Rand.Float( 0.9f, 1f ) );
+				sound.SetPitch( Game.Random.Float( 0.9f, 1f ) );
 				sound.SetVolume( (1f / 100f) * eventData.Speed );
 
 				Velocity = eventData.This.PostVelocity.WithZ( 0f );
@@ -164,7 +165,7 @@ namespace Facepunch.Pool
 				if ( Math.Abs( eventData.Normal.x ) >= 0.5f || Math.Abs( eventData.Normal.y ) >= 0.5f )
 				{
 					var sound = PlaySound( "ball-hit-side" );
-					sound.SetPitch( Rand.Float( 0.9f, 1f ) );
+					sound.SetPitch( Game.Random.Float( 0.9f, 1f ) );
 					sound.SetVolume( (1f / 100f) * eventData.Speed );
 
 					var velocity = eventData.This.PreVelocity.WithZ( 0f );

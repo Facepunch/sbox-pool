@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using Sandbox.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Facepunch.Pool
 		public PoolBallType Type;
 	}
 
-	partial class Game : GameManager
+	partial class PoolGame : GameManager
 	{
 		private PoolCamera Camera { get; set; }
 
@@ -20,8 +21,8 @@ namespace Facepunch.Pool
 		public Player PreviousLoser { get; set; }
 		public List<PoolBall> AllBalls { get; private set; }
 
-		public static Game Instance => Current as Game;
-		public static BaseGameRules Rules => Instance?.InternalGameRules;
+		public static PoolGame Entity => Current as PoolGame;
+		public static BaseGameRules Rules => Entity?.InternalGameRules;
 
 		[Net] public PoolCue Cue { get; private set; }
 		[Net, Change( nameof( OnRoundChanged ) )] public BaseRound Round { get; private set; }
@@ -42,23 +43,15 @@ namespace Facepunch.Pool
 		private FastForward FastForwardHud;
 		private WinSummary WinSummaryHud;
 
-		public override void Spawn()
+		public PoolGame() : base()
 		{
-			LoadGameRules( "rules_regular" );
-			ChangeRound( new LobbyRound() );
 
-			base.Spawn();
-		}
-
-		public Game()
-		{
-			Current = this;
 		}
 
 		public override void ClientSpawn()
 		{
-			Local.Hud?.Delete( true );
-			Local.Hud = new Hud();
+			Game.RootPanel?.Delete( true );
+			Game.RootPanel = new Hud();
 
 			Camera = new();
 
@@ -108,7 +101,7 @@ namespace Facepunch.Pool
 		{
 			HideWinSummary();
 
-			WinSummaryHud = Local.Hud.AddChild<WinSummary>();
+			WinSummaryHud = Game.RootPanel.AddChild<WinSummary>();
 			WinSummaryHud.Outcome = outcome;
 			WinSummaryHud.Opponent = opponent;
 			WinSummaryHud.Rating = rating;
@@ -217,17 +210,12 @@ namespace Facepunch.Pool
 			Round?.Start();
 		}
 
-		public override void DoPlayerNoclip( Client client )
-		{
-			// Do nothing. The player can't noclip in this mode.
-		}
-
 		public override void PostLevelLoaded()
 		{
-			if ( IsServer )
-			{
-				Cue = Rules.CreatePoolCue();
-			}
+			LoadGameRules( "rules_regular" );
+			ChangeRound( new LobbyRound() );
+
+			Cue = Rules.CreatePoolCue();
 
 			base.PostLevelLoaded();
 		}
@@ -240,7 +228,7 @@ namespace Facepunch.Pool
 			base.OnKilled( entity );
 		}
 
-		public override void ClientDisconnect( Client client, NetworkDisconnectionReason reason )
+		public override void ClientDisconnect( IClient client, NetworkDisconnectionReason reason )
 		{
 			Log.Info( client.Name + " left, checking minimum player count..." );
 
@@ -249,7 +237,7 @@ namespace Facepunch.Pool
 			base.ClientDisconnect( client, reason );
 		}
 
-		public override void ClientJoined( Client client )
+		public override void ClientJoined( IClient client )
 		{
 			var player = new Player();
 
@@ -260,7 +248,7 @@ namespace Facepunch.Pool
 			base.ClientJoined( client );
 		}
 
-		public override void Simulate( Client client )
+		public override void Simulate( IClient client )
 		{
 			if ( Cue != null && Cue.IsValid() && Cue.Client == client )
 				Cue.Simulate( client );
@@ -278,7 +266,7 @@ namespace Facepunch.Pool
 
 			if ( newValue )
 			{
-				FastForwardHud = Local.Hud.AddChild<FastForward>();
+				FastForwardHud = Game.RootPanel.AddChild<FastForward>();
 			}
 		}
 
@@ -304,7 +292,7 @@ namespace Facepunch.Pool
 		{
 			Round?.OnTick();
 
-			Map.Physics.TimeScale = IsFastForwarding ? 5f : 1f;
+			Game.PhysicsWorld.TimeScale = IsFastForwarding ? 5f : 1f;
 
 			if ( NextSecondTime )
 			{
@@ -312,7 +300,7 @@ namespace Facepunch.Pool
 				OnSecond();
 			}
 
-			if ( IsClient )
+			if ( Game.IsClient )
 			{
 				if ( WhiteArea == null )
 				{
@@ -337,7 +325,7 @@ namespace Facepunch.Pool
 
 		private void CheckMinimumPlayers()
 		{
-			if ( Client.All.Count >= 2)
+			if ( Game.Clients.Count >= 2)
 			{
 				if ( Round is LobbyRound || Round == null )
 				{

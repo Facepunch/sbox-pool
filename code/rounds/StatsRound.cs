@@ -1,9 +1,4 @@
 ﻿using Sandbox;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facepunch.Pool
 {
@@ -24,8 +19,8 @@ namespace Facepunch.Pool
 
 		protected override void OnTimeUp()
 		{
-			Game.Instance.HideWinSummary( To.Everyone );
-			Game.Instance.ChangeRound( new PlayRound() );
+			PoolGame.Entity.HideWinSummary( To.Everyone );
+			PoolGame.Entity.ChangeRound( new PlayRound() );
 
 			base.OnTimeUp();
 		}

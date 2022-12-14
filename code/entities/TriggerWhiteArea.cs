@@ -23,7 +23,7 @@ namespace Facepunch.Pool
 		{
 			base.Spawn();
 
-			Game.Instance.WhiteArea = this;
+			PoolGame.Entity.WhiteArea = this;
 
 			Transmit = TransmitType.Always;
 		}

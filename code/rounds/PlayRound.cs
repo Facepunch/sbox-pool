@@ -31,15 +31,17 @@ namespace Facepunch.Pool
 		{
 			base.OnPlayerLeave( player );
 
-			var playerOne = Game.Instance.PlayerOne;
-			var playerTwo = Game.Instance.PlayerTwo;
+			var playerOne = PoolGame.Entity.PlayerOne;
+			var playerTwo = PoolGame.Entity.PlayerTwo;
 
 			if ( player == playerOne || player == playerTwo )
 			{
-				if ( Game.Rules.IsRanked )
+				/*
+				if ( Pool.Rules.IsRanked )
 					GameServices.AbandonGame( true );
+				*/
 
-				Game.Instance.ChangeRound( new StatsRound() );
+				PoolGame.Entity.ChangeRound( new StatsRound() );
 			}
 		}
 
@@ -62,9 +64,9 @@ namespace Facepunch.Pool
 
 		public override void OnBallEnterPocket( PoolBall ball, TriggerBallPocket pocket )
 		{
-			if ( Host.IsServer )
+			if ( Game.IsServer )
 			{
-				ball.PlaySound( $"ball-pocket-{Rand.Int( 1, 2 )}" );
+				ball.PlaySound( $"ball-pocket-{Game.Random.Int( 1, 2 )}" );
 
 				if ( BallLikelyToPot == ball )
 				{
@@ -76,19 +78,19 @@ namespace Facepunch.Pool
 				{
 					if ( ball.Type == PoolBallType.White )
 					{
-						_ = Game.Instance.RespawnBallAsync( ball, true );
+						_ = PoolGame.Entity.RespawnBallAsync( ball, true );
 					}
 					else if ( ball.Type == PoolBallType.Black )
 					{
-						_ = Game.Instance.RespawnBallAsync( ball, true );
+						_ = PoolGame.Entity.RespawnBallAsync( ball, true );
 					}
 					else
 					{
-						var player = Game.Instance.GetBallPlayer( ball );
+						var player = PoolGame.Entity.GetBallPlayer( ball );
 
 						if ( player != null && player.IsValid() )
 						{
-							var currentPlayer = Game.Instance.CurrentPlayer;
+							var currentPlayer = PoolGame.Entity.CurrentPlayer;
 
 							if ( currentPlayer == player )
 								player.HasSecondShot = true;
@@ -96,7 +98,7 @@ namespace Facepunch.Pool
 							DoPlayerPotBall( currentPlayer, ball, BallPotType.Silent );
 						}
 
-						_ = Game.Instance.RemoveBallAsync( ball, true );
+						_ = PoolGame.Entity.RemoveBallAsync( ball, true );
 					}
 
 					return;
@@ -105,11 +107,11 @@ namespace Facepunch.Pool
 				if ( ball.Type == PoolBallType.White )
 				{
 					ball.LastStriker.Foul( FoulReason.PotWhiteBall );
-					_ = Game.Instance.RespawnBallAsync( ball, true );
+					_ = PoolGame.Entity.RespawnBallAsync( ball, true );
 				}
 				else if ( ball.Type == ball.LastStriker.BallType )
 				{
-					if ( Game.Instance.CurrentPlayer == ball.LastStriker )
+					if ( PoolGame.Entity.CurrentPlayer == ball.LastStriker )
 					{
 						ball.LastStriker.HasSecondShot = true;
 						ball.LastStriker.DidHitOwnBall = true;
@@ -117,13 +119,13 @@ namespace Facepunch.Pool
 
 					DoPlayerPotBall( ball.LastStriker, ball, BallPotType.Normal );
 
-					_ = Game.Instance.RemoveBallAsync( ball, true );
+					_ = PoolGame.Entity.RemoveBallAsync( ball, true );
 				}
 				else if ( ball.Type == PoolBallType.Black )
 				{
 					DoPlayerPotBall( ball.LastStriker, ball, BallPotType.Normal );
 
-					_ = Game.Instance.RemoveBallAsync( ball, true );
+					_ = PoolGame.Entity.RemoveBallAsync( ball, true );
 				}
 				else
 				{
@@ -137,7 +139,7 @@ namespace Facepunch.Pool
 						ball.LastStriker.DidHitOwnBall = true;
 						ball.LastStriker.BallType = ball.Type;
 
-						var otherPlayer = Game.Instance.GetOtherPlayer( ball.LastStriker );
+						var otherPlayer = PoolGame.Entity.GetOtherPlayer( ball.LastStriker );
 						otherPlayer.BallType = (ball.Type == PoolBallType.Spots ? PoolBallType.Stripes : PoolBallType.Spots);
 
 						DoPlayerPotBall( ball.LastStriker, ball, BallPotType.Claim );
@@ -152,7 +154,7 @@ namespace Facepunch.Pool
 						DoPlayerPotBall( ball.LastStriker, ball, BallPotType.Normal );
 					}
 
-					_ = Game.Instance.RemoveBallAsync( ball, true );
+					_ = PoolGame.Entity.RemoveBallAsync( ball, true );
 				}
 			}
 		}
@@ -160,7 +162,7 @@ namespace Facepunch.Pool
 		public override void OnBallHitOtherBall( PoolBall ball, PoolBall other )
 		{
 			// Is this the first ball this striker has hit?
-			if ( Host.IsServer && ball.Type == PoolBallType.White )
+			if ( Game.IsServer && ball.Type == PoolBallType.White )
 			{
 				if ( ball.LastStriker.BallType == PoolBallType.White )
 				{
@@ -196,10 +198,10 @@ namespace Facepunch.Pool
 
 		public override void OnSecond()
 		{
-			if ( Host.IsClient ) return;
+			if ( Game.IsClient ) return;
 
 			var timeLeft = MathF.Max( PlayerTurnEndTime, 0f );
-			var currentPlayer = Game.Instance.CurrentPlayer;
+			var currentPlayer = PoolGame.Entity.CurrentPlayer;
 
 			if ( !currentPlayer.IsValid() )
 				return;
@@ -223,9 +225,9 @@ namespace Facepunch.Pool
 
 		public override void OnTick()
 		{
-			if ( Host.IsServer && Game.Instance != null && !IsGameOver )
+			if ( Game.IsServer && PoolGame.Entity != null && !IsGameOver )
 			{
-				var currentPlayer = Game.Instance.CurrentPlayer;
+				var currentPlayer = PoolGame.Entity.CurrentPlayer;
 
 				if ( currentPlayer != null && currentPlayer.IsValid() && currentPlayer.HasStruckWhiteBall )
 					CheckForStoppedBalls();
@@ -236,18 +238,18 @@ namespace Facepunch.Pool
 
 		protected override void OnStart()
 		{
-			if ( Host.IsServer )
+			if ( Game.IsServer )
 			{
-				Game.Instance.RespawnAllBalls();
+				PoolGame.Entity.RespawnAllBalls();
 
 				var potentials = new List<Player>();
-				var players = Client.All.Select( ( client ) => client.Pawn as Player );
+				var players = Game.Clients.Select( ( client ) => client.Pawn as Player );
 
 				foreach ( var player in players )
 					potentials.Add( player );
 
-				var previousWinner = Game.Instance.PreviousWinner;
-				var previousLoser = Game.Instance.PreviousLoser;
+				var previousWinner = PoolGame.Entity.PreviousWinner;
+				var previousLoser = PoolGame.Entity.PreviousLoser;
 
 				if ( previousLoser.IsValid() )
 				{
@@ -261,14 +263,14 @@ namespace Facepunch.Pool
 				var playerOne = previousWinner;
 
 				if ( !playerOne.IsValid()) 
-					playerOne = potentials[Rand.Int( 0, potentials.Count - 1 )];
+					playerOne = potentials[Game.Random.Int( 0, potentials.Count - 1 )];
 
 				potentials.Remove( playerOne );
 
 				var playerTwo = playerOne;
 				
 				if ( potentials.Count > 0 )
-					playerTwo = potentials[Rand.Int( 0, potentials.Count - 1 )];
+					playerTwo = potentials[Game.Random.Int( 0, potentials.Count - 1 )];
 
 				potentials.Remove( playerTwo );
 
@@ -278,8 +280,8 @@ namespace Facepunch.Pool
 				playerOne.StartPlaying();
 				playerTwo.StartPlaying();
 
-				Game.Instance.PlayerOne = playerOne;
-				Game.Instance.PlayerTwo = playerTwo;
+				PoolGame.Entity.PlayerOne = playerOne;
+				PoolGame.Entity.PlayerTwo = playerTwo;
 
 				// Everyone else is a spectator.
 				potentials.ForEach( ( player ) =>
@@ -294,12 +296,12 @@ namespace Facepunch.Pool
 
 		protected override void OnFinish()
 		{
-			if ( Host.IsServer )
+			if ( Game.IsServer )
 			{
-				Game.Instance.PotHistory.Clear();
+				PoolGame.Entity.PotHistory.Clear();
 
-				var playerOne = Game.Instance.PlayerOne;
-				var playerTwo = Game.Instance.PlayerTwo;
+				var playerOne = PoolGame.Entity.PlayerOne;
+				var playerTwo = PoolGame.Entity.PlayerTwo;
 
 				playerOne?.MakeSpectator( true );
 				playerTwo?.MakeSpectator( true );
@@ -310,44 +312,44 @@ namespace Facepunch.Pool
 
 		private void StartGame()
 		{
-			var playerOne = Game.Instance.PlayerOne;
-			var playerTwo = Game.Instance.PlayerTwo;
+			var playerOne = PoolGame.Entity.PlayerOne;
+			var playerTwo = PoolGame.Entity.PlayerTwo;
 
-			if ( Rand.Float( 1f ) >= 0.5f )
+			if ( Game.Random.Float( 1f ) >= 0.5f )
 				playerOne.StartTurn();
 			else
 				playerTwo.StartTurn();
 
 			// We always start by letting the player choose the white ball location.
-			Game.Instance.CurrentPlayer.StartPlacingWhiteBall();
+			PoolGame.Entity.CurrentPlayer.StartPlacingWhiteBall();
 
-			PlayerTurnEndTime = Game.TurnTime;
+			PlayerTurnEndTime = PoolGame.TurnTime;
 
-			if ( Game.Rules.IsRanked )
-				GameServices.StartGame();
+			//if ( Pool.Rules.IsRanked )
+				//GameServices.StartGame();
 
-			Game.Rules.Start();
+			PoolGame.Rules.Start();
 		}
 
 		private void DoPlayerPotBall( Player player, PoolBall ball, BallPotType type )
 		{
 			player.DidPotBall = true;
 
-			Game.Instance.PotHistory.Add( new PotHistoryItem
+			PoolGame.Entity.PotHistory.Add( new PotHistoryItem
 			{
 				Type = ball.Type,
 				Number = ball.Number
 			} );
 
-			if ( Game.Rules.IsRanked )
-				GameServices.RecordEvent( player.Client, $"Potted {ball.Number} ({ball.Type})", 1 );
+			//if ( Pool.Rules.IsRanked )
+				//GameServices.RecordEvent( player.Client, $"Potted {ball.Number} ({ball.Type})", 1 );
 
 			if ( type == BallPotType.Normal )
-				Game.Instance.AddToast( To.Everyone, player, $"{ player.Client.Name } has potted a ball", ball.GetIconClass() );
+				PoolGame.Entity.AddToast( To.Everyone, player, $"{ player.Client.Name } has potted a ball", ball.GetIconClass() );
 			else if ( type == BallPotType.Claim )
-				Game.Instance.AddToast( To.Everyone, player, $"{ player.Client.Name } has claimed { ball.Type }", ball.GetIconClass() );
+				PoolGame.Entity.AddToast( To.Everyone, player, $"{ player.Client.Name } has claimed { ball.Type }", ball.GetIconClass() );
 
-			var owner = Game.Instance.GetBallPlayer( ball );
+			var owner = PoolGame.Entity.GetBallPlayer( ball );
 
 			if ( owner != null && owner.IsValid() )
 				owner.Score++;
@@ -361,42 +363,46 @@ namespace Facepunch.Pool
 
 			var client = winner.Client;
 
-			Game.Instance.AddToast( To.Everyone, winner, $"{ client.Name } has won the game", "wins" );
+			PoolGame.Entity.AddToast( To.Everyone, winner, $"{ client.Name } has won the game", "wins" );
 
-			var loser = Game.Instance.GetOtherPlayer( winner );
+			var loser = PoolGame.Entity.GetOtherPlayer( winner );
 
-			if ( Game.Rules.IsRanked )
+			/*
+			if ( Pool.Rules.IsRanked )
 			{
 				winner.Client.SetGameResult( GameplayResult.Win, winner.Score );
 				loser.Client.SetGameResult( GameplayResult.Lose, loser.Score );
 			}
+			*/
 
 			foreach ( var c in Entity.All.OfType<Player>() )
 			{
 				c.SendSound( To.Single( c ), c == loser ? "lose-game" : "win-game" );
 			}
 
-			Game.Instance.PreviousWinner = winner;
-			Game.Instance.PreviousLoser = loser;
+			PoolGame.Entity.PreviousWinner = winner;
+			PoolGame.Entity.PreviousLoser = loser;
 
-			if ( Game.Rules.IsRanked )
+			/*
+			if ( Pool.Rules.IsRanked )
 			{
 				await GameServices.EndGameAsync();
 				await winner.Elo.Update( winner.Client );
 				await loser.Elo.Update( loser.Client );
 			}
+			*/
 
-			Game.Instance.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser, winner.Elo.Rating, winner.Elo.Delta );
-			Game.Instance.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner, loser.Elo.Rating, loser.Elo.Delta );
+			PoolGame.Entity.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser, winner.Elo.Rating, winner.Elo.Delta );
+			PoolGame.Entity.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner, loser.Elo.Rating, loser.Elo.Delta );
 
-			Game.Instance.ChangeRound( new StatsRound() );
+			PoolGame.Entity.ChangeRound( new StatsRound() );
 
-			Game.Rules.Finish();
+			PoolGame.Rules.Finish();
 		}
 
 		private PoolBall FindBallLikelyToPot()
 		{
-			var potentials = Game.Instance.AllBalls;
+			var potentials = PoolGame.Entity.AllBalls;
 			var pockets = Entity.All.OfType<TriggerBallPocket>();
 
 			foreach ( var ball in potentials )
@@ -430,7 +436,7 @@ namespace Facepunch.Pool
 
 		private bool ShouldIncreaseTimeScale()
 		{
-			var currentPlayer = Game.Instance.CurrentPlayer;
+			var currentPlayer = PoolGame.Entity.CurrentPlayer;
 
 			if ( currentPlayer.TimeSinceWhiteStruck >= 7f )
 				return true;
@@ -443,22 +449,22 @@ namespace Facepunch.Pool
 
 		private void EndTurn()
 		{
-			var currentPlayer = Game.Instance.CurrentPlayer;
+			var currentPlayer = PoolGame.Entity.CurrentPlayer;
 
-			Game.Instance.AllBalls.ForEach( ( ball ) =>
+			PoolGame.Entity.AllBalls.ForEach( ( ball ) =>
 			{
 				ball.PhysicsBody.AngularVelocity = Vector3.Zero;
 				ball.PhysicsBody.Velocity = Vector3.Zero;
 				ball.PhysicsBody.ClearForces();
 			} );
 
-			Game.Instance.Cue.Reset();
+			PoolGame.Entity.Cue.Reset();
 
 			var didHitAnyBall = currentPlayer.DidPotBall;
 
 			if ( !didHitAnyBall )
 			{
-				foreach ( var ball in Game.Instance.AllBalls )
+				foreach ( var ball in PoolGame.Entity.AllBalls )
 				{
 					if ( ball.Type != PoolBallType.White && ball.LastStriker == currentPlayer )
 					{
@@ -468,7 +474,7 @@ namespace Facepunch.Pool
 				}
 			}
 
-			foreach ( var ball in Game.Instance.AllBalls )
+			foreach ( var ball in PoolGame.Entity.AllBalls )
 				ball.ResetLastStriker();
 
 			if ( !didHitAnyBall )
@@ -477,8 +483,8 @@ namespace Facepunch.Pool
 			if ( currentPlayer.IsPlacingWhiteBall )
 				currentPlayer.StopPlacingWhiteBall();
 
-			var otherPlayer = Game.Instance.GetOtherPlayer( currentPlayer );
-			var blackBall = Game.Instance.BlackBall;
+			var otherPlayer = PoolGame.Entity.GetOtherPlayer( currentPlayer );
+			var blackBall = PoolGame.Entity.BlackBall;
 
 			if ( blackBall == null || !blackBall.IsValid() )
 			{
@@ -513,26 +519,26 @@ namespace Facepunch.Pool
 				ClockTickingSound = null;
 			}
 
-			Game.Instance.IsFastForwarding = false;
+			PoolGame.Entity.IsFastForwarding = false;
 
-			PlayerTurnEndTime = Game.TurnTime;
+			PlayerTurnEndTime = PoolGame.TurnTime;
 			DidClaimThisTurn = false;
 			BallLikelyToPot = null;
 		}
 
 		private void CheckForStoppedBalls()
 		{
-			var currentPlayer = Game.Instance.CurrentPlayer;
+			var currentPlayer = PoolGame.Entity.CurrentPlayer;
 
 			if ( currentPlayer.TimeSinceWhiteStruck >= 2f && !BallLikelyToPot.IsValid() )
 			{
 				BallLikelyToPot = FindBallLikelyToPot();
 
 				if ( BallLikelyToPot.IsValid() )
-					currentPlayer.PlaySound( $"gasp-{Rand.Int( 1, 2 )}" );
+					currentPlayer.PlaySound( $"gasp-{Game.Random.Int( 1, 2 )}" );
 			}
 
-			if ( ShouldIncreaseTimeScale() && !Game.Instance.IsFastForwarding )
+			if ( ShouldIncreaseTimeScale() && !PoolGame.Entity.IsFastForwarding )
 			{
 				if ( !HasPlayedFastForwardSound )
 				{
@@ -541,11 +547,11 @@ namespace Facepunch.Pool
 					currentPlayer.PlaySound( "fast-forward" ).SetVolume( 0.05f );
 				}
 
-				Game.Instance.IsFastForwarding = true;
+				PoolGame.Entity.IsFastForwarding = true;
 			}
 
 			// Now check if all balls are essentially still.
-			foreach ( var ball in Game.Instance.AllBalls )
+			foreach ( var ball in PoolGame.Entity.AllBalls )
 			{
 				if ( !ball.PhysicsBody.Velocity.IsNearlyZero( 0.2f ) )
 					return;

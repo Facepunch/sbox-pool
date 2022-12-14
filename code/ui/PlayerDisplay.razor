@@ -7,11 +7,11 @@
 @inherits Panel
 
 <root class="@GetRootClass()">
-    <PlayerDisplayItem class="one" Player=@Game.Instance.PlayerOne>
+    <PlayerDisplayItem class="one" Player=@PoolGame.Entity.PlayerOne>
 
     </PlayerDisplayItem>
 
-    <PlayerDisplayItem class="two" Player=@Game.Instance.PlayerTwo>
+    <PlayerDisplayItem class="two" Player=@PoolGame.Entity.PlayerTwo>
 
     </PlayerDisplayItem>
 
@@ -32,7 +32,7 @@
 
     private string GetRootClass()
     {
-        var game = Game.Instance;
+        var game = PoolGame.Entity;
         var round = game.Round;
         if ( round is not PlayRound ) return "hidden";
         return string.Empty;
@@ -45,7 +45,7 @@
 
     private string GetTimeBarClass()
     {
-        var game = Game.Instance;
+        var game = PoolGame.Entity;
         var round = game.Round;
         if ( round is not PlayRound ) return string.Empty;
         return round.TimeLeftSeconds < 5 ? "low" : string.Empty;
@@ -53,7 +53,7 @@
 
     private int GetTimeLeft()
     {
-        var round = Game.Instance.Round;
+        var round = PoolGame.Entity.Round;
 
         if ( round is PlayRound )
             return round.TimeLeftSeconds;
@@ -69,7 +69,7 @@
 
     protected override int BuildHash()
     {
-        var game = Game.Instance;
+        var game = PoolGame.Entity;
         return HashCode.Combine( game.PlayerOne, game.PlayerTwo, game.Round.TimeLeftSeconds );
     }
 }

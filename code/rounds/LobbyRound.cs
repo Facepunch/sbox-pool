@@ -13,14 +13,14 @@ namespace Facepunch.Pool
 
 		protected override void OnStart()
 		{
-			if ( Host.IsServer )
+			if ( Game.IsServer )
 			{
-				var players = Client.All.Select( ( client ) => client.Pawn as Player );
+				var players = Game.Clients.Select( ( client ) => client.Pawn as Player );
 
 				foreach ( var player in players )
 					OnPlayerJoin( player );
 
-				Game.Instance.RemoveAllBalls();
+				PoolGame.Entity.RemoveAllBalls();
 			}
 		}
 

@@ -29,15 +29,20 @@ namespace Facepunch.Pool
 			return Elo.GetLevel( Rating );
 		}
 
-		public async Task Update( Client client )
+		public async Task Update( IClient client )
 		{
 			try
 			{
+				/*
 				var score = await client.FetchGameRankAsync();
 				var delta = (score.Level - Rating);
 
 				Rating = score.Level;
 				Delta = delta;
+				*/
+
+				Rating = 0;
+				Delta = 0;
 			}
 			catch ( TaskCanceledException _ )
 			{

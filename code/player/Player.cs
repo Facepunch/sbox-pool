@@ -57,7 +57,7 @@ namespace Facepunch.Pool
 
 		public void StartPlacingWhiteBall()
 		{
-			var whiteBall = Game.Instance.WhiteBall;
+			var whiteBall = PoolGame.Entity.WhiteBall;
 
 			if ( whiteBall != null && whiteBall.IsValid() )
 			{
@@ -65,14 +65,14 @@ namespace Facepunch.Pool
 				whiteBall.Owner = this;
 			}
 
-			_ = Game.Instance.RespawnBallAsync( whiteBall );
+			_ = PoolGame.Entity.RespawnBallAsync( whiteBall );
 
 			IsPlacingWhiteBall = true;
 		}
 
 		public void StopPlacingWhiteBall()
 		{
-			var whiteBall = Game.Instance.WhiteBall;
+			var whiteBall = PoolGame.Entity.WhiteBall;
 
 			if ( whiteBall != null && whiteBall.IsValid() )
 			{
@@ -89,7 +89,7 @@ namespace Facepunch.Pool
 			{
 				Log.Info( Client.Name + " has fouled (reason: " + reason.ToString() + ")" );
 
-				Game.Instance.AddToast( To.Everyone, this, reason.ToMessage( this ), "foul" );
+				PoolGame.Entity.AddToast( To.Everyone, this, reason.ToMessage( this ), "foul" );
 
 				PlaySound( "foul" );
 
@@ -109,13 +109,13 @@ namespace Facepunch.Pool
 		public void StartTurn(bool hasSecondShot = false, bool showMessage = true)
 		{
 			if ( showMessage )
-				Game.Instance.AddToast( To.Everyone, this, $"{ Client.Name } has started their turn" );
+				PoolGame.Entity.AddToast( To.Everyone, this, $"{ Client.Name } has started their turn" );
 
 			SendSound( To.Single( this ), "ding" );
 
 			// This player will be predicting the pool cue now.
-			Game.Instance.CurrentPlayer = this;
-			Game.Instance.Cue.Owner = this;
+			PoolGame.Entity.CurrentPlayer = this;
+			PoolGame.Entity.Cue.Owner = this;
 
 			HasStruckWhiteBall = false;
 			HasSecondShot = hasSecondShot;
@@ -152,9 +152,9 @@ namespace Facepunch.Pool
 			base.BuildInput();
 		}
 
-		public override void Simulate( Client client )
+		public override void Simulate( IClient client )
 		{
-			Game.Instance.Round?.UpdatePlayerPosition( this );
+			PoolGame.Entity.Round?.UpdatePlayerPosition( this );
 			base.Simulate( client );
 		}
 	}

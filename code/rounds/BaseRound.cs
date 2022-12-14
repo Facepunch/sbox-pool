@@ -1,9 +1,5 @@
 ﻿using Sandbox;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facepunch.Pool
 {
@@ -23,7 +19,7 @@ namespace Facepunch.Pool
 		{
 			get
 			{
-				return RoundEndTime - Sandbox.Time.Now;
+				return RoundEndTime - Time.Now;
 			}
 		}
 
@@ -31,15 +27,15 @@ namespace Facepunch.Pool
 
 		public void Start()
 		{
-			if ( Host.IsServer && RoundDuration > 0 )
-				RoundEndTime = Sandbox.Time.Now + RoundDuration;
+			if ( Game.IsServer && RoundDuration > 0 )
+				RoundEndTime = Time.Now + RoundDuration;
 			
 			OnStart();
 		}
 
 		public void Finish()
 		{
-			if ( Host.IsServer )
+			if ( Game.IsServer )
 			{
 				RoundEndTime = 0f;
 				Players.Clear();
@@ -50,7 +46,7 @@ namespace Facepunch.Pool
 
 		public void AddPlayer( Player player )
 		{
-			Host.AssertServer();
+			Game.AssertServer();
 
 			if ( !Players.Contains(player) )
 				Players.Add( player );
@@ -80,7 +76,7 @@ namespace Facepunch.Pool
 
 		public virtual void OnSecond()
 		{
-			if ( Host.IsServer )
+			if ( Game.IsServer )
 			{
 				if ( RoundEndTime > 0 && Sandbox.Time.Now >= RoundEndTime )
 				{

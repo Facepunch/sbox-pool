@@ -7,7 +7,7 @@ namespace Facepunch.Pool
 	{
 		public void Update()
 		{
-			if ( Local.Pawn is Player player )
+			if ( Game.LocalPawn is Player player )
 			{
 				Camera.FieldOfView = Screen.CreateVerticalFieldOfView( 15f );
 				Camera.Position = Camera.Position.LerpTo( player.Position, Time.Delta );

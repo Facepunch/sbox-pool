@@ -34,7 +34,7 @@
 
 	private bool IsRankHidden()
 	{
-		return !Game.Rules?.IsRanked ?? true;
+		return !PoolGame.Rules?.IsRanked ?? true;
 	}
 
 	private string GetActiveClass()

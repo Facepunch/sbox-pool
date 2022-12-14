@@ -13,7 +13,7 @@
     <div class="container">
         <div class="win-header @(Outcome == EloOutcome.Win ? "win" : "loss")"></div>
         <OpponentDisplay Outcome=@Outcome Player=@Opponent></OpponentDisplay>
-        @if (Game.Rules.IsRanked) <RankProgress Rating=@Rating Delta=@Delta></RankProgress>
+        @if (PoolGame.Rules.IsRanked) <RankProgress Rating=@Rating Delta=@Delta></RankProgress>
     </div>
 </root>
 

@@ -54,18 +54,18 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine( Items.Count, Game.Instance.Round );
+        return HashCode.Combine( Items.Count, PoolGame.Entity.Round );
     }
 
     protected override void OnAfterTreeRender( bool firstTime )
     {
-        Game.Instance.UpdatePotHistory();
+        PoolGame.Entity.UpdatePotHistory();
         base.OnAfterTreeRender( firstTime );
     }
 
     private string GetHiddenClass()
     {
-        if ( Game.Instance.Round is not PlayRound ) return "hidden";
+        if ( PoolGame.Entity.Round is not PlayRound ) return "hidden";
         return string.Empty;
     }
 }
