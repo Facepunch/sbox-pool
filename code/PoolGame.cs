@@ -312,6 +312,7 @@ namespace Facepunch.Pool
 
 				if ( Time.Tick % 30 == 0 )
 				{
+					Log.Info( Round );
 					UpdatePotHistory();
 				}
 			}

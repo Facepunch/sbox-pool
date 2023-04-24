@@ -59,7 +59,7 @@ namespace Facepunch.Pool
 				return;
 			}
 
-			if ( !Input.Down( InputButton.PrimaryAttack ) )
+			if ( !Input.Down( "attack1" ) )
 			{
 				UpdateAimDir( controller, whiteBall.Position );
 
@@ -219,7 +219,7 @@ namespace Facepunch.Pool
 
 			whiteBall.TryMoveTo( cursorTrace.EndPosition, whiteAreaWorldOBB );
 
-			if ( Input.Released( InputButton.PrimaryAttack ) )
+			if ( Input.Released( "attack1" ) )
 				controller.StopPlacingWhiteBall();
 		}
 
