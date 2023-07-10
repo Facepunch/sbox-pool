@@ -7,11 +7,8 @@
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
-  "ResourcePaths": [
-    "/ui/pool/*",
-    "/sounds/*",
-    "/surfaces/*"
-  ],
+  "Resources": "ui/*\nsounds/*\nsurfaces/*",
+  "MenuResources": null,
   "HasCode": true,
   "CodePath": "code",
   "PackageReferences": [],
@@ -104,6 +101,8 @@
     "DefaultLeaderboards": null,
     "Summary": "A classic pub game where your skill is determined by your blood-alcohol content.\r\n",
     "Description": "A classic pub game where your skill is determined by your blood-alcohol content.\r\n",
-    "Public": true
+    "Public": true,
+    "TickRate": 0,
+    "CsProjName": ""
   }
 }
