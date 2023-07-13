@@ -111,7 +111,7 @@ h2
 	bottom: 0;
 	top: 0;
 	flex-direction: column;
-	padding: 100px 0px;
+	padding: 100px 00px;
 }
 
 .hidden
@@ -127,6 +127,7 @@ h2
 .layout
 {
 	flex-direction: column;
+	padding: 200px 80px;
 
 	> *
 	{

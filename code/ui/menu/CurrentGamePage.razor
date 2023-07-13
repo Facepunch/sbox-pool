@@ -1,0 +1,50 @@
+@using System
+@using Sandbox;
+@using System.Linq;
+@using Sandbox.MenuSystem;
+@using Sandbox.UI;
+@using Sandbox.UI.GameMenu;
+@inherits Panel
+@namespace Facepunch.Pool.Menu
+
+@if ( !Game.InGame )
+{
+    return;
+}
+
+<root style="flex-direction: column;">
+
+    <div class="game-title">
+        @Game.Menu.Package.Title
+    </div>
+
+    <div class="controls">
+
+        <a class="button" href="/active">Current Game</a>
+        <a class="button" onclick=@LeaveGame>Leave Game</a>
+        <span style="height: 20px;"></span>
+
+    </div>
+
+</root>
+
+@code
+{
+    void LeaveGame()
+    {
+        Game.Menu.LeaveServer("Leaving");
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        if (!IsVisible)
+            return;
+
+        if ( !Game.InGame )
+        {
+            this.Navigate( "/" );
+        }
+    }
+}

@@ -23,22 +23,28 @@
     </div>
 
     <div class="body columned">
-        Waiting for an opponent...
+       <span class="waiting-label">Waiting for Opponent...</span>
     </div>
 
 </root>
 
 @code
 {
+    private TimeUntil NextFindLobbies { get; set; }
+    private bool IsLoadingGame { get; set; }
+    private bool IsPageOpen { get; set; }
     private ILobby Lobby { get; set; }
 
     public void OnNavigationOpen()
     {
+        IsPageOpen = true;
         JoinOrCreateLobby();
     }
 
     public void OnNavigationClose()
     {
+        IsLoadingGame = false;
+        IsPageOpen = false;
         Lobby?.Leave();
         Lobby = null;
     }
@@ -52,24 +58,73 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.MemberCount < lobby.MaxMembers )
+            if ( lobby.MemberCount > 0 && lobby.MemberCount < lobby.MaxMembers )
             {
-                Lobby = lobby;
-                await Lobby.JoinAsync();
-                return;
+                var success = await lobby.JoinAsync();
+
+                if ( success && IsPageOpen )
+                {
+                    Lobby = lobby;
+                    return;
+                }
             }
         }
 
+        if (!IsPageOpen) return;
+
         Lobby = await Game.Menu.CreateLobbyAsync(2);
         Lobby.Map = "maps/pool_lounge_v2.vpk";
-        Lobby.OnMemberEnter += OnMemberEnter;
+
+        NextFindLobbies = 1f;
     }
 
-    private void OnMemberEnter( Friend friend )
+    private async void TryFindAvailableLobbies()
     {
-        if ( Lobby.MemberCount == 2 )
+        var lobbies = await Game.Menu.QueryLobbiesAsync();
+
+        foreach ( var lobby in lobbies )
+        {
+            if ( lobby.MemberCount > 0 && lobby.MemberCount < lobby.MaxMembers )
+            {
+                var success = await lobby.JoinAsync();
+
+                if ( success && IsPageOpen )
+                {
+                    Lobby?.Leave();
+                    Lobby = lobby;
+
+                    return;
+                }
+            }
+        }
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        if (IsLoadingGame) return;
+
+        if ( NextFindLobbies )
+        {
+            TryFindAvailableLobbies();
+            NextFindLobbies = 5f;
+        }
+
+        if (Lobby == null) return;
+
+        if ( Lobby.Owner.IsMe )
+        {
+            if ( Lobby.MemberCount == Lobby.MaxMembers )
+            {
+                Lobby.LaunchGameAsync();
+                IsLoadingGame = true;
+            }
+        }
+        else if (Lobby.State == "active")
         {
             Lobby.LaunchGameAsync();
+            IsLoadingGame = true;
         }
     }
 }

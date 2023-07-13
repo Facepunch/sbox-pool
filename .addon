@@ -8,15 +8,13 @@
   "HasAssets": true,
   "AssetsPath": "",
   "Resources": "ui/*\nsounds/*\nsurfaces/*",
-  "MenuResources": null,
+  "MenuResources": "ui/menu/*",
   "HasCode": true,
   "CodePath": "code",
   "PackageReferences": [],
   "EditorReferences": null,
   "Metadata": {
-    "MapList": [
-      "pool_lounge_v2"
-    ],
+    "MapList": [],
     "MinPlayers": 2,
     "MaxPlayers": 2,
     "MapSelect": "Hidden",

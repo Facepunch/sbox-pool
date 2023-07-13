@@ -21,7 +21,7 @@
         DefaultUrl = "/";
 
         AddDestination("/", typeof(FrontPage));
-        AddDestination("/active", typeof(ActivePage));
+        AddDestination("/active", typeof(CurrentGamePage));
         AddDestination("/find", typeof(FindGamePage));
 
         if (Game.InGame) Navigate("/active");
