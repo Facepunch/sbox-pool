@@ -73,7 +73,7 @@
 
                     if ( Lobby.State == "ready" )
                     {
-                        Game.Menu.EnterServerAsync();
+                        Lobby.LaunchGameAsync();
                         IsLoadingGame = true;
                     }
 
@@ -95,7 +95,7 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.MemberCount < lobby.MaxMembers )
+            if ( !lobby.Owner.IsMe && lobby.MemberCount < lobby.MaxMembers )
             {
                 var success = await lobby.JoinAsync();
 
@@ -137,11 +137,14 @@
         else if (Lobby.State == "active")
         {
             Log.Info("Joining game...");
-            Game.Menu.EnterServerAsync();
+            Lobby.LaunchGameAsync();
             IsLoadingGame = true;
         }
 
-        if (Lobby != null && Lobby.State == "loading") return;
+        if (Lobby != null && (Lobby.MemberCount == Lobby.MaxMembers || Lobby.State == "loading"))
+        {
+            return;
+        }
 
         if ( !IsLoadingGame && NextFindLobbies )
         {
