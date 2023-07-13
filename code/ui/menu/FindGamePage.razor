@@ -1,0 +1,42 @@
+@using System
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.Menu;
+@attribute [StyleSheet]
+@inherits Panel
+@implements INavigatorPage
+@namespace Facepunch.Pool.Menu
+
+<root class="layout">
+
+    <div class="navbar">
+
+        <div class="left">
+            <a class="button" href="/"> Home </a>
+            <span class="block">&gt;</span>
+            <span class="block">Find a Game</span>
+        </div>
+
+        <div class="right">
+            
+        </div>
+    </div>
+
+    <div class="body columned">
+        Waiting for an opponent...
+    </div>
+
+</root>
+
+@code
+{
+    public void OnNavigationOpen()
+    {
+        
+    }
+
+    public void OnNavigationClose()
+    {
+        
+    }
+}
