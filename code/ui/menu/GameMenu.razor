@@ -27,7 +27,6 @@
         if (Game.InGame) Navigate("/active");
 
         BindClass( "ingame", () => Game.InGame );
-        BindClass( "inlobby", () => Game.Menu?.Lobby != null);
     }
 
 	protected override void OnEvent( PanelEvent e )
@@ -43,9 +42,6 @@
 
     [GameEvent.Menu.ServerJoined]
     public void OnServerJoined() => Navigate("/active");
-
-    [GameEvent.Menu.LobbyJoined]
-    public void OnLobbyJoined() => Navigate("/lobby");
 
     [GameEvent.Menu.LobbyLeave]
     public void OnLobbyLeave() => Navigate("/");

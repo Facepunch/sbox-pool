@@ -30,13 +30,46 @@
 
 @code
 {
+    private ILobby Lobby { get; set; }
+
     public void OnNavigationOpen()
     {
-        
+        JoinOrCreateLobby();
     }
 
     public void OnNavigationClose()
     {
-        
+        Lobby?.Leave();
+        Lobby = null;
+    }
+
+    private async void JoinOrCreateLobby()
+    {
+        Lobby?.Leave();
+        Lobby = null;
+
+        var lobbies = await Game.Menu.QueryLobbiesAsync();
+
+        foreach ( var lobby in lobbies )
+        {
+            if ( lobby.MemberCount < lobby.MaxMembers )
+            {
+                Lobby = lobby;
+                await Lobby.JoinAsync();
+                return;
+            }
+        }
+
+        Lobby = await Game.Menu.CreateLobbyAsync(2);
+        Lobby.Map = "maps/pool_lounge_v2.vpk";
+        Lobby.OnMemberEnter += OnMemberEnter;
+    }
+
+    private void OnMemberEnter( Friend friend )
+    {
+        if ( Lobby.MemberCount == 2 )
+        {
+            Lobby.LaunchGameAsync();
+        }
     }
 }
