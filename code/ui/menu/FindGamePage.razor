@@ -73,7 +73,7 @@
 
                     if ( Lobby.State == "ready" )
                     {
-                        Lobby.LaunchGameAsync();
+                        Game.Menu.EnterServerAsync();
                         IsLoadingGame = true;
                     }
 
@@ -109,7 +109,7 @@
 
                     if (Lobby.State == "ready")
                     {
-                        Lobby.LaunchGameAsync();
+                        Game.Menu.EnterServerAsync();
                         IsLoadingGame = true;
                     }
 
@@ -137,7 +137,7 @@
         else if (Lobby.State == "active")
         {
             Log.Info("Joining game...");
-            Lobby.LaunchGameAsync();
+            Game.Menu.EnterServerAsync();
             IsLoadingGame = true;
         }
 
