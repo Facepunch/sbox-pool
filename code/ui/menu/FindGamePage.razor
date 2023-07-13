@@ -69,8 +69,14 @@
 
                 if ( success )
                 {
-                    Log.Info("Found lobby...");
                     Lobby = lobby;
+
+                    if ( Lobby.State == "ready" )
+                    {
+                        Lobby.LaunchGameAsync();
+                        IsLoadingGame = true;
+                    }
+
                     return;
                 }
             }
@@ -98,6 +104,12 @@
                     Log.Info("Found a new lobby to join...");
                     Lobby?.Leave();
                     Lobby = lobby;
+
+                    if ( Lobby.State == "ready" )
+                    {
+                        Lobby.LaunchGameAsync();
+                        IsLoadingGame = true;
+                    }
 
                     return;
                 }
