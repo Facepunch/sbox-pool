@@ -1,7 +1,5 @@
 FrontPage {
 	margin: 100px 100px;
-	display: none;
-	gap: 64px;
 
 	.game-title {
 		font-family: Poppins;
@@ -9,10 +7,16 @@ FrontPage {
 		font-size: 70px;
 	}
 
+	.game-description {
+		font-family: Poppins;
+		font-size: 20px;
+	}
+
 	.controls {
 		flex-direction: column;
 		align-items: flex-start;
-		gap: 8px;
+		margin-top: 64px;
+		gap: 16px;
 
 		.button {
 			border-radius: 8px;
