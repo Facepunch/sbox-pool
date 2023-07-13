@@ -19,7 +19,9 @@
       "EditorReferences": [
         "facepunch.carpet_c#18624",
         "facepunch.pool",
-        "whispergarden.carpet#23601"
+        "whispergarden.carpet#23601",
+        "facepunch.carpet_a#18621",
+        "semxy.bowiecarpet#24042"
       ],
       "Metadata": {
         "SingleAssetSource": "maps/pool_lounge_v2.vmap"
