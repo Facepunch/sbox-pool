@@ -18,7 +18,8 @@
       "PackageReferences": [],
       "EditorReferences": [
         "facepunch.carpet_c#18624",
-        "facepunch.pool"
+        "facepunch.pool",
+        "whispergarden.carpet#23601"
       ],
       "Metadata": {
         "SingleAssetSource": "maps/pool_lounge_v2.vmap"
