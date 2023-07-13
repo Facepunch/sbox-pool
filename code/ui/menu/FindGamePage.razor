@@ -61,7 +61,7 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.State == "open" && lobby.MemberCount < lobby.MaxMembers )
+            if ( lobby.MemberCount < lobby.MaxMembers )
             {
                 var success = await lobby.JoinAsync();
 
@@ -95,7 +95,7 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.State == "open" && lobby.MemberCount < lobby.MaxMembers )
+            if ( lobby.MemberCount < lobby.MaxMembers )
             {
                 var success = await lobby.JoinAsync();
 
@@ -140,6 +140,8 @@
             Lobby.LaunchGameAsync();
             IsLoadingGame = true;
         }
+
+        if (Lobby != null && Lobby.State == "loading") return;
 
         if ( !IsLoadingGame && NextFindLobbies )
         {
