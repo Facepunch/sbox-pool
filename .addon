@@ -8,7 +8,7 @@
   "HasAssets": true,
   "AssetsPath": "",
   "Resources": "ui/*\nsounds/*\nsurfaces/*",
-  "MenuResources": "ui/menu/*",
+  "MenuResources": "ui/menu/*\nmaps/*",
   "HasCode": true,
   "CodePath": "code",
   "PackageReferences": [],
