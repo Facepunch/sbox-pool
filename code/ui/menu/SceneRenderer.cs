@@ -18,13 +18,15 @@ public class SceneRenderer : ScenePanel
 
 		Camera.BackgroundColor = Color.Black;
 		Camera.FieldOfView = 60f;
-		Camera.Position = Vector3.Up * 100f;
 		Camera.AmbientLightColor = Color.Black;
 		Camera.Rotation = Rotation.LookAt( Vector3.Down );
 	}
 
 	public override void Tick()
 	{
+		Camera.Position = Vector3.Up * 100f;
+		Camera.Position = Camera.Position.WithZ( 100f + MathF.Sin( Time.Now ) );
+
 		base.Tick();
 	}
 }

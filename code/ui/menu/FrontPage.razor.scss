@@ -1,19 +1,21 @@
-FrontPage
-{
+FrontPage {
 	margin: 100px 100px;
-	gap: 100px;
+	gap: 64px;
 
-	.game-title
-	{
+	.game-title {
 		font-family: Poppins;
 		font-weight: 700;
 		font-size: 70px;
 	}
 
-	.controls
-	{
+	.controls {
 		flex-direction: column;
-		gap: 8px;
 		align-items: flex-start;
+		gap: 8px;
+
+		.button {
+			border-radius: 8px;
+			padding: 16px;
+		}
 	}
 }
