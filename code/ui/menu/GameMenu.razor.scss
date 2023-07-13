@@ -37,18 +37,16 @@ GameMenu {
 	flex-shrink: 0;
 }
 
-.button
-{
+.button {
 	background-color: #000a;
+	border-radius: 8px;
 	cursor: pointer;
 
-	&:hover
-	{
+	&:hover {
 		opacity: 1;
 	}
 
-	&:active
-	{
+	&:active {
 		left: 2px;
 		top: 3px;
 	}
@@ -127,7 +125,6 @@ h2
 .layout
 {
 	flex-direction: column;
-	padding: 200px 80px;
 
 	> *
 	{

@@ -1,0 +1,21 @@
+CurrentGamePage {
+	margin: 100px 100px;
+	gap: 64px;
+
+	.game-title {
+		font-family: Poppins;
+		font-weight: 700;
+		font-size: 70px;
+	}
+
+	.controls {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+
+		.button {
+			border-radius: 8px;
+			padding: 16px;
+		}
+	}
+}

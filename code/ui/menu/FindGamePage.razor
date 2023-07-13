@@ -30,7 +30,7 @@
 
 @code
 {
-    private TimeUntil NextFindLobbies { get; set; }
+    private RealTimeUntil NextFindLobbies { get; set; }
     private bool IsLoadingGame { get; set; }
     private bool IsPageOpen { get; set; }
     private ILobby Lobby { get; set; }
@@ -45,12 +45,15 @@
     {
         IsLoadingGame = false;
         IsPageOpen = false;
+
         Lobby?.Leave();
         Lobby = null;
     }
 
     private async void JoinOrCreateLobby()
     {
+        NextFindLobbies = 5f;
+
         Lobby?.Leave();
         Lobby = null;
 
@@ -58,12 +61,15 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.MemberCount > 0 && lobby.MemberCount < lobby.MaxMembers )
+            if ( lobby.MemberCount < lobby.MaxMembers )
             {
                 var success = await lobby.JoinAsync();
 
-                if ( success && IsPageOpen )
+                if (!IsPageOpen) return;
+
+                if ( success )
                 {
+                    Log.Info("Found lobby...");
                     Lobby = lobby;
                     return;
                 }
@@ -72,10 +78,9 @@
 
         if (!IsPageOpen) return;
 
+        Log.Info("Creating lobby...");
         Lobby = await Game.Menu.CreateLobbyAsync(2);
         Lobby.Map = "maps/pool_lounge_v2.vpk";
-
-        NextFindLobbies = 1f;
     }
 
     private async void TryFindAvailableLobbies()
@@ -84,12 +89,13 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.MemberCount > 0 && lobby.MemberCount < lobby.MaxMembers )
+            if ( lobby.MemberCount < lobby.MaxMembers )
             {
                 var success = await lobby.JoinAsync();
 
-                if ( success && IsPageOpen )
+                if (success && IsPageOpen)
                 {
+                    Log.Info("Found a new lobby to join...");
                     Lobby?.Leave();
                     Lobby = lobby;
 
@@ -103,28 +109,28 @@
     {
         base.Tick();
 
-        if (IsLoadingGame) return;
-
-        if ( NextFindLobbies )
-        {
-            TryFindAvailableLobbies();
-            NextFindLobbies = 5f;
-        }
-
-        if (Lobby == null) return;
+        if (Lobby == null || IsLoadingGame) return;
 
         if ( Lobby.Owner.IsMe )
         {
             if ( Lobby.MemberCount == Lobby.MaxMembers )
             {
+                Log.Info("Starting game...");
                 Lobby.LaunchGameAsync();
                 IsLoadingGame = true;
             }
         }
         else if (Lobby.State == "active")
         {
+            Log.Info("Joining game...");
             Lobby.LaunchGameAsync();
             IsLoadingGame = true;
+        }
+
+        if ( !IsLoadingGame && NextFindLobbies )
+        {
+            TryFindAvailableLobbies();
+            NextFindLobbies = 5f;
         }
     }
 }
