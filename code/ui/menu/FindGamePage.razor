@@ -61,7 +61,7 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.MemberCount < lobby.MaxMembers )
+            if ( lobby.State == "open" && lobby.MemberCount < lobby.MaxMembers )
             {
                 var success = await lobby.JoinAsync();
 
@@ -95,17 +95,19 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.MemberCount < lobby.MaxMembers )
+            if ( lobby.State == "open" && lobby.MemberCount < lobby.MaxMembers )
             {
                 var success = await lobby.JoinAsync();
 
-                if (success && IsPageOpen)
+                if (!IsPageOpen) return;
+
+                if (success)
                 {
                     Log.Info("Found a new lobby to join...");
                     Lobby?.Leave();
                     Lobby = lobby;
 
-                    if ( Lobby.State == "ready" )
+                    if (Lobby.State == "ready")
                     {
                         Lobby.LaunchGameAsync();
                         IsLoadingGame = true;
