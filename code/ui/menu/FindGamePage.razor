@@ -8,23 +8,16 @@
 @namespace Facepunch.Pool.Menu
 
 <root class="layout">
-
-    <div class="navbar">
-
-        <div class="left">
-            <a class="button" href="/"> Home </a>
-            <span class="block">&gt;</span>
-            <span class="block">Find a Game</span>
-        </div>
-
-        <div class="right">
-            @IsLoadingGame
-        </div>
+    
+    <div class="waiting">
+        <div class="spinner"></div>
+        <label>Waiting for Opponent...</label>
     </div>
 
-    <div class="body columned">
-       <span class="waiting-label">Waiting for Opponent...</span>
-    </div>
+    <a class="main-button" href="/">
+        Go Back
+        <div class="underline"></div>
+    </a>
 
 </root>
 
@@ -72,6 +65,7 @@
 
             if ( Lobby.State != "ready" ) return;
             Lobby.LaunchGameAsync();
+            Sound.FromScreen( "bonus" );
             IsLoadingGame = true;
 
             return;
@@ -105,6 +99,7 @@
             if ( Lobby.State != "ready" ) return;
             
             Game.Menu.EnterServerAsync();
+            Sound.FromScreen( "bonus" );
             IsLoadingGame = true;
 
             return;
@@ -123,6 +118,7 @@
             {
                 Log.Info("Starting game...");
                 Lobby.LaunchGameAsync();
+                Sound.FromScreen( "bonus" );
                 IsLoadingGame = true;
             }
         }
@@ -130,6 +126,7 @@
         {
             Log.Info("Joining game...");
             Lobby.LaunchGameAsync();
+            Sound.FromScreen( "bonus" );
             IsLoadingGame = true;
         }
 

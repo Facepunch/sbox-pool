@@ -1,26 +1,4 @@
 FrontPage {
-	margin: 100px 100px;
-
-	.game-title {
-		font-family: Poppins;
-		font-weight: 700;
-		font-size: 70px;
-	}
-
-	.game-description {
-		font-family: Poppins;
-		font-size: 20px;
-	}
-
-	.controls {
-		flex-direction: column;
-		align-items: flex-start;
-		margin-top: 64px;
-		gap: 16px;
-
-		.button {
-			border-radius: 8px;
-			padding: 16px;
-		}
-	}
+	justify-content: center;
+	align-items: center;
 }

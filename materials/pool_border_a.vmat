@@ -1,46 +1,24 @@
-// THIS FILE IS AUTO-GENERATED
-
-Layer0
+"Layer0"
 {
-	shader "complex.vfx"
-
-	//---- PBR ----
-	F_METALNESS_TEXTURE 1
-	F_SPECULAR 1
-
-	//---- Ambient Occlusion ----
-	g_flAmbientOcclusionDirectDiffuse "1.000"
-	g_flAmbientOcclusionDirectSpecular "1.000"
-	TextureAmbientOcclusion "textures/pool/pool_border_a_ao.tga"
-
-	//---- Color ----
-	g_flModelTintAmount "1.000"
-	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
-	TextureColor "textures/pool/pool_border_a_color.tga"
-
-	//---- Fade ----
-	g_flFadeExponent "1.000"
-
-	//---- Fog ----
-	g_bFogEnabled "1"
-
-	//---- Lighting ----
-	g_flDirectionalLightmapMinZ "0.050"
-	g_flDirectionalLightmapStrength "1.000"
-
-	//---- Metalness ----
-	TextureMetalness "textures/pool/pool_border_a_metal.tga"
-
-	//---- Normal ----
-	TextureNormal "textures/pool/pool_border_a_normal.tga"
-
-	//---- Roughness ----
-	TextureRoughness "textures/pool/pool_border_a_rough.tga"
-
-	//---- Texture Coordinates ----
-	g_nScaleTexCoordUByModelScaleAxis "0"
-	g_nScaleTexCoordVByModelScaleAxis "0"
-	g_vTexCoordOffset "[0.000 0.000]"
-	g_vTexCoordScale "[1.000 1.000]"
-	g_vTexCoordScrollSpeed "[0.000 0.000]"
+	"shader"		"shaders/complex.shader"
+	"F_METALNESS_TEXTURE"		"1"
+	"F_SPECULAR"		"1"
+	"g_flAmbientOcclusionDirectDiffuse"		"1.000000"
+	"g_flAmbientOcclusionDirectSpecular"		"1.000000"
+	"TextureAmbientOcclusion"		"textures/pool/pool_border_a_ao.tga"
+	"g_flModelTintAmount"		"1.000000"
+	"g_vColorTint"		"[1.000000 1.000000 1.000000 0.000000]"
+	"TextureColor"		"textures/pool/pool_border_a_color.tga"
+	"g_flFadeExponent"		"1.000000"
+	"g_bFogEnabled"		"1"
+	"g_flDirectionalLightmapMinZ"		"0.050000"
+	"g_flDirectionalLightmapStrength"		"1.000000"
+	"TextureMetalness"		"textures/pool/pool_border_a_metal.tga"
+	"TextureNormal"		"textures/pool/pool_border_a_normal.tga"
+	"TextureRoughness"		"textures/pool/pool_border_a_rough.tga"
+	"g_nScaleTexCoordUByModelScaleAxis"		"0"
+	"g_nScaleTexCoordVByModelScaleAxis"		"0"
+	"g_vTexCoordOffset"		"[0.000 0.000]"
+	"g_vTexCoordScale"		"[1.000 1.000]"
+	"g_vTexCoordScrollSpeed"		"[0.000 0.000]"
 }
