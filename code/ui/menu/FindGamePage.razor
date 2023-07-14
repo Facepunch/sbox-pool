@@ -18,7 +18,7 @@
         </div>
 
         <div class="right">
-            
+            @IsLoadingGame
         </div>
     </div>
 
@@ -61,25 +61,25 @@
 
         foreach ( var lobby in lobbies )
         {
-            if (lobby.MemberCount >= lobby.MaxMembers) continue;
+            if ( lobby.MemberCount >= lobby.MaxMembers ) continue;
             var success = await lobby.JoinAsync();
 
-            if (!IsPageOpen) return;
-            if (!success) continue;
+            if ( !IsPageOpen ) return;
+            if ( !success ) continue;
             
-            Log.Info("Joined a lobby on init...");
+            Log.Info( "Joined a lobby on init..." );
             Lobby = lobby;
 
-            if (Lobby.State != "ready") return;
+            if ( Lobby.State != "ready" ) return;
             Lobby.LaunchGameAsync();
             IsLoadingGame = true;
 
             return;
         }
 
-        if (!IsPageOpen) return;
+        if ( !IsPageOpen ) return;
 
-        Log.Info("Creating lobby...");
+        Log.Info( "Creating lobby..." );
         Lobby = await Game.Menu.CreateLobbyAsync(2);
         Lobby.Map = "maps/pool_lounge_v2.vpk";
     }
@@ -95,15 +95,14 @@
             
             var success = await lobby.JoinAsync();
 
-            if (!IsPageOpen) return;
-
-            if (!success) continue;
+            if ( !IsPageOpen ) return;
+            if ( !success ) continue;
             
-            Log.Info("Found a new lobby to join...");
+            Log.Info( "Found a new lobby to join..." );
             Lobby?.Leave();
             Lobby = lobby;
 
-            if (Lobby.State != "ready") return;
+            if ( Lobby.State != "ready" ) return;
             
             Game.Menu.EnterServerAsync();
             IsLoadingGame = true;

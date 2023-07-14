@@ -12,7 +12,7 @@ namespace Facepunch.Pool
 		public PoolBallType Type;
 	}
 
-	partial class PoolGame : GameManager
+	public partial class PoolGame : GameManager
 	{
 		private PoolCamera Camera { get; set; }
 
@@ -69,21 +69,25 @@ namespace Facepunch.Pool
 
 			foreach ( var entity in entities )
 			{
-				if ( entity is PoolBallSpawn spawner )
+				if ( entity is not PoolBallSpawn spawner )
 				{
-					if ( spawner.Type == ball.Type && spawner.Number == ball.Number )
-					{
-						ball.Scale = 1f;
-						ball.Position = spawner.Position;
-						ball.RenderColor = ball.RenderColor.WithAlpha(1.0f);
-						ball.PhysicsBody.AngularVelocity = Vector3.Zero;
-						ball.PhysicsBody.Velocity = Vector3.Zero;
-						ball.PhysicsBody.ClearForces();
-						ball.ResetInterpolation();
-
-						return;
-					}
+					continue;
 				}
+
+				if ( spawner.Type != ball.Type || spawner.Number != ball.Number )
+				{
+					continue;
+				}
+
+				ball.Scale = 1f;
+				ball.Position = spawner.Position;
+				ball.RenderColor = ball.RenderColor.WithAlpha(1.0f);
+				ball.PhysicsBody.AngularVelocity = Vector3.Zero;
+				ball.PhysicsBody.Velocity = Vector3.Zero;
+				ball.PhysicsBody.ClearForces();
+				ball.ResetInterpolation();
+
+				return;
 			}
 		}
 
@@ -163,13 +167,15 @@ namespace Facepunch.Pool
 
 		public void UpdatePotHistory()
 		{
-			if ( BallHistory.Current != null )
+			if ( BallHistory.Current == null )
 			{
-				BallHistory.Current.Clear();
-
-				foreach ( var item in PotHistory )
-					BallHistory.Current.AddByType( item.Type, item.Number );
+				return;
 			}
+
+			BallHistory.Current.Clear();
+
+			foreach ( var item in PotHistory )
+				BallHistory.Current.AddByType( item.Type, item.Number );
 		}
 
 		public void RespawnAllBalls()
@@ -182,22 +188,29 @@ namespace Facepunch.Pool
 
 			foreach ( var entity in spawners )
 			{
-				if ( entity is PoolBallSpawn spawner )
+				if ( entity is not PoolBallSpawn spawner )
 				{
-					var ball = Rules.CreatePoolBall();
-
-					ball.Position = spawner.Position;
-					ball.Rotation = Rotation.LookAt( Vector3.Random );
-
-					ball.SetType( spawner.Type, spawner.Number );
-
-					if ( ball.Type == PoolBallType.White )
-						WhiteBall = ball;
-					else if ( ball.Type == PoolBallType.Black )
-						BlackBall = ball;
-
-					AllBalls.Add( ball );
+					continue;
 				}
+
+				var ball = Rules.CreatePoolBall();
+
+				ball.Position = spawner.Position;
+				ball.Rotation = Rotation.LookAt( Vector3.Random );
+
+				ball.SetType( spawner.Type, spawner.Number );
+
+				switch ( ball.Type )
+				{
+					case PoolBallType.White:
+						WhiteBall = ball;
+						break;
+					case PoolBallType.Black:
+						BlackBall = ball;
+						break;
+				}
+
+				AllBalls.Add( ball );
 			}
 		}
 
@@ -281,13 +294,13 @@ namespace Facepunch.Pool
 			Round?.OnSecond();
 		}
 
-		[Event.Client.Frame]
+		[GameEvent.Client.Frame]
 		private void OnFrame()
 		{
 			Camera?.Update();
 		}
 
-		[Event.Tick]
+		[GameEvent.Tick]
 		private void Tick()
 		{
 			Round?.OnTick();
@@ -300,21 +313,23 @@ namespace Facepunch.Pool
 				OnSecond();
 			}
 
-			if ( Game.IsClient )
+			if ( !Game.IsClient )
 			{
-				if ( WhiteArea == null )
-				{
-					WhiteArea = All.OfType<TriggerWhiteArea>().FirstOrDefault();
+				return;
+			}
 
-					if ( WhiteArea != null )
-						WhiteArea.MakeAreaQuad();
-				}
+			if ( WhiteArea == null )
+			{
+				WhiteArea = All.OfType<TriggerWhiteArea>().FirstOrDefault();
 
-				if ( Time.Tick % 30 == 0 )
-				{
-					Log.Info( Round );
-					UpdatePotHistory();
-				}
+				if ( WhiteArea != null )
+					WhiteArea.MakeAreaQuad();
+			}
+
+			if ( Time.Tick % 30 == 0 )
+			{
+				Log.Info( Round );
+				UpdatePotHistory();
 			}
 		}
 
