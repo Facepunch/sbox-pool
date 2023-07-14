@@ -45,7 +45,7 @@ namespace Facepunch.Pool
 
 		public PoolGame() : base()
 		{
-
+			
 		}
 
 		public override void ClientSpawn()

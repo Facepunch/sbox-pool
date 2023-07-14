@@ -9,10 +9,14 @@
 
 <root>
 	<label class="opponent-text">
-		@if ( Outcome == EloOutcome.Win )
-			<text>Tou beat</text>
+		@if (Outcome == EloOutcome.Win)
+		{
+			@:You beat
+		}
 		else
-			<text>You lost to</text>
+		{
+			@:You lost to
+		}
 	</label>
 
 	<div class="opponent-background">

@@ -6,7 +6,7 @@
 @attribute [StyleSheet( "/ui/PlayerDisplay.scss" )]
 @inherits Panel
 
-@if (!Player.IsValid()) return;
+@if (!Player.IsValid()) { return; }
 
 <root class="@GetActiveClass() @GetHiddenClass()">
 	<div class="player-container">

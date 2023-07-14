@@ -61,26 +61,20 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( lobby.MemberCount < lobby.MaxMembers )
-            {
-                var success = await lobby.JoinAsync();
+            if (lobby.MemberCount >= lobby.MaxMembers) continue;
+            var success = await lobby.JoinAsync();
 
-                if (!IsPageOpen) return;
+            if (!IsPageOpen) return;
+            if (!success) continue;
+            
+            Log.Info("Joined a lobby on init...");
+            Lobby = lobby;
 
-                if ( success )
-                {
-                    Log.Info("Joined a lobby on init...");
-                    Lobby = lobby;
+            if (Lobby.State != "ready") return;
+            Lobby.LaunchGameAsync();
+            IsLoadingGame = true;
 
-                    if ( Lobby.State == "ready" )
-                    {
-                        Lobby.LaunchGameAsync();
-                        IsLoadingGame = true;
-                    }
-
-                    return;
-                }
-            }
+            return;
         }
 
         if (!IsPageOpen) return;
@@ -96,27 +90,25 @@
 
         foreach ( var lobby in lobbies )
         {
-            if ( !lobby.Owner.IsMe && lobby.MemberCount < lobby.MaxMembers )
-            {
-                var success = await lobby.JoinAsync();
+            if (lobby.Owner.IsMe || lobby.MemberCount >= lobby.MaxMembers)
+                continue;
+            
+            var success = await lobby.JoinAsync();
 
-                if (!IsPageOpen) return;
+            if (!IsPageOpen) return;
 
-                if (success)
-                {
-                    Log.Info("Found a new lobby to join...");
-                    Lobby?.Leave();
-                    Lobby = lobby;
+            if (!success) continue;
+            
+            Log.Info("Found a new lobby to join...");
+            Lobby?.Leave();
+            Lobby = lobby;
 
-                    if (Lobby.State == "ready")
-                    {
-                        Game.Menu.EnterServerAsync();
-                        IsLoadingGame = true;
-                    }
+            if (Lobby.State != "ready") return;
+            
+            Game.Menu.EnterServerAsync();
+            IsLoadingGame = true;
 
-                    return;
-                }
-            }
+            return;
         }
     }
 
@@ -143,14 +135,12 @@
         }
 
         if (Lobby != null && (Lobby.MemberCount == Lobby.MaxMembers || Lobby.State == "loading"))
-        {
             return;
-        }
 
-        if ( !IsLoadingGame && NextFindLobbies )
-        {
-            TryFindAvailableLobbies();
-            NextFindLobbies = 5f;
-        }
+        if (IsLoadingGame || !NextFindLobbies)
+            return;
+        
+        TryFindAvailableLobbies();
+        NextFindLobbies = 5f;
     }
 }
