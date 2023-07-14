@@ -25,6 +25,8 @@
         if (Game.InGame) Navigate("/active");
 
         BindClass( "ingame", () => Game.InGame );
+
+        Sound.FromScreen( "busy-bar" );
     }
 
     protected override void OnEvent( PanelEvent e )
