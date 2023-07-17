@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sandbox.Services;
 
 namespace Facepunch.Pool
 {
@@ -36,11 +37,6 @@ namespace Facepunch.Pool
 
 			if ( player == playerOne || player == playerTwo )
 			{
-				/*
-				if ( Pool.Rules.IsRanked )
-					GameServices.AbandonGame( true );
-				*/
-
 				PoolGame.Entity.ChangeRound( new StatsRound() );
 			}
 		}
@@ -325,9 +321,6 @@ namespace Facepunch.Pool
 
 			PlayerTurnEndTime = PoolGame.TurnTime;
 
-			//if ( Pool.Rules.IsRanked )
-				//GameServices.StartGame();
-
 			PoolGame.Rules.Start();
 		}
 
@@ -340,9 +333,6 @@ namespace Facepunch.Pool
 				Type = ball.Type,
 				Number = ball.Number
 			} );
-
-			//if ( Pool.Rules.IsRanked )
-				//GameServices.RecordEvent( player.Client, $"Potted {ball.Number} ({ball.Type})", 1 );
 
 			if ( type == BallPotType.Normal )
 				PoolGame.Entity.AddToast( To.Everyone, player, $"{ player.Client.Name } has potted a ball", ball.GetIconClass() );
@@ -366,14 +356,13 @@ namespace Facepunch.Pool
 			PoolGame.Entity.AddToast( To.Everyone, winner, $"{ client.Name } has won the game", "wins" );
 
 			var loser = PoolGame.Entity.GetOtherPlayer( winner );
-
-			/*
-			if ( Pool.Rules.IsRanked )
+			
+			if ( PoolGame.Rules.IsRanked )
 			{
-				winner.Client.SetGameResult( GameplayResult.Win, winner.Score );
-				loser.Client.SetGameResult( GameplayResult.Lose, loser.Score );
+				Stats.SetValue( winner.Client, "elo", winner.Elo.Rating );
+				Stats.SetValue( loser.Client, "elo", loser.Elo.Rating );
+				Stats.Increment( winner.Client, "wins", 1 );
 			}
-			*/
 
 			foreach ( var c in Entity.All.OfType<Player>() )
 			{
@@ -383,18 +372,10 @@ namespace Facepunch.Pool
 			PoolGame.Entity.PreviousWinner = winner;
 			PoolGame.Entity.PreviousLoser = loser;
 
-			/*
-			if ( Pool.Rules.IsRanked )
-			{
-				await GameServices.EndGameAsync();
-				await winner.Elo.Update( winner.Client );
-				await loser.Elo.Update( loser.Client );
-			}
-			*/
+			EloScore.Update( winner.Elo, loser.Elo, EloOutcome.Win );
 
 			PoolGame.Entity.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser, winner.Elo.Rating, winner.Elo.Delta );
 			PoolGame.Entity.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner, loser.Elo.Rating, loser.Elo.Delta );
-
 			PoolGame.Entity.ChangeRound( new StatsRound() );
 
 			PoolGame.Rules.Finish();

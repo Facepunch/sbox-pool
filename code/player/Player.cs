@@ -100,7 +100,7 @@ namespace Facepunch.Pool
 
 		public void StartPlaying()
 		{
-			_ = Elo.Update( Client );
+			Elo.Initialize( Client );
 			MakeSpectator( false );
 			BallType = PoolBallType.White;
 			Score = 0;

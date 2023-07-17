@@ -1,5 +1,7 @@
-﻿using Sandbox;
+﻿using System;
+using Sandbox;
 using System.Threading.Tasks;
+using Sandbox.Services;
 
 namespace Facepunch.Pool
 {
@@ -11,6 +13,23 @@ namespace Facepunch.Pool
 
 	public partial class EloScore : BaseNetworkable
 	{
+		public static void Update( EloScore playerOne, EloScore playerTwo, EloOutcome outcome )
+		{
+			const int eloK = 32;
+			var delta = (int)(eloK * ((int)outcome - GetExpectationToWin( playerOne, playerTwo )));
+
+			playerOne.Delta = delta;
+			playerOne.Rating += delta;
+
+			playerTwo.Delta = -delta;
+			playerTwo.Rating -= delta;
+		}
+		
+		public static double GetExpectationToWin( EloScore playerOne, EloScore playerTwo )
+		{
+			return 1f / (1f + MathF.Pow( 10f, (playerTwo.Rating - playerOne.Rating) / 400f ));
+		}
+		
 		[Net] public int Rating { get; set; }
 		[Net] public int Delta { get; set; }
 
@@ -29,25 +48,9 @@ namespace Facepunch.Pool
 			return Elo.GetLevel( Rating );
 		}
 
-		public async Task Update( IClient client )
+		public void Initialize( IClient client )
 		{
-			try
-			{
-				/*
-				var score = await client.FetchGameRankAsync();
-				var delta = (score.Level - Rating);
-
-				Rating = score.Level;
-				Delta = delta;
-				*/
-
-				Rating = 0;
-				Delta = 0;
-			}
-			catch ( TaskCanceledException _ )
-			{
-				Log.Warning( $"Unable to fetch game rank data for {client}!" );
-			}
+			
 		}
 	}
 }
