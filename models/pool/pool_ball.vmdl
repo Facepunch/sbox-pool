@@ -35,7 +35,7 @@
 						_class = "PhysicsShapeSphere"
 						parent_bone = ""
 						surface_prop = "pool.ball"
-						collision_prop = "default"
+						collision_tags = "solid"
 						radius = 1.125
 						center = [ 0.0, 0.0, 0.0 ]
 					},
@@ -261,5 +261,6 @@
 		model_archetype = ""
 		primary_associated_entity = ""
 		anim_graph_name = ""
+		base_model_name = ""
 	}
 }

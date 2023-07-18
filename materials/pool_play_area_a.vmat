@@ -1,25 +1,51 @@
-"Layer0"
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
 {
-	"shader"		"shaders/complex.shader"
-	"F_TINT_MASK"		"1"
-	"F_SPECULAR"		"1"
-	"g_flAmbientOcclusionDirectDiffuse"		"0.300000"
-	"g_flAmbientOcclusionDirectSpecular"		"0.300000"
-	"TextureAmbientOcclusion"		"textures/pool/pool_play_area_a_ao.tga"
-	"g_flModelTintAmount"		"1.000000"
-	"g_vColorTint"		"[1.000000 1.000000 1.000000 0.000000]"
-	"TextureColor"		"textures/pool/pool_play_area_a_color.tga"
-	"TextureTintMask"		"textures/pool/pool_play_area_a_mask.tga"
-	"g_flFadeExponent"		"1.000000"
-	"g_bFogEnabled"		"1"
-	"g_flDirectionalLightmapMinZ"		"0.050000"
-	"g_flDirectionalLightmapStrength"		"1.000000"
-	"g_flMetalness"		"0.000000"
-	"TextureNormal"		"textures/pool/pool_play_area_a_normal.tga"
-	"TextureRoughness"		"textures/pool/pool_play_area_a_rough.tga"
-	"g_nScaleTexCoordUByModelScaleAxis"		"0"
-	"g_nScaleTexCoordVByModelScaleAxis"		"0"
-	"g_vTexCoordOffset"		"[0.000 0.000]"
-	"g_vTexCoordScale"		"[1.000 1.000]"
-	"g_vTexCoordScrollSpeed"		"[0.000 0.000]"
+	shader "shaders/complex.shader"
+
+	//---- Color ----
+	F_TINT_MASK 1
+
+	//---- PBR ----
+	F_SPECULAR 1
+
+	//---- Ambient Occlusion ----
+	g_flAmbientOcclusionDirectDiffuse "0.300"
+	g_flAmbientOcclusionDirectSpecular "0.300"
+	TextureAmbientOcclusion "textures/pool/pool_play_area_a_ao.tga"
+
+	//---- Color ----
+	g_flModelTintAmount "1.000"
+	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
+	TextureColor "textures/pool/pool_play_area_a_color.tga"
+	TextureTintMask "textures/pool/pool_play_area_a_mask.tga"
+
+	//---- Fade ----
+	g_flFadeExponent "1.000"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Metalness ----
+	g_flMetalness "0.000"
+
+	//---- Normal ----
+	TextureNormal "textures/pool/pool_play_area_a_normal.tga"
+
+	//---- Roughness ----
+	g_flRoughnessScaleFactor "1.000"
+	TextureRoughness "textures/pool/pool_play_area_a_rough.tga"
+
+	//---- Texture Coordinates ----
+	g_nScaleTexCoordUByModelScaleAxis "0"
+	g_nScaleTexCoordVByModelScaleAxis "0"
+	g_vTexCoordOffset "[0.000 0.000]"
+	g_vTexCoordScale "[1.000 1.000]"
+	g_vTexCoordScrollSpeed "[0.000 0.000]"
+
+	SystemAttributes
+	{
+		PhysicsSurfaceProperties "pool.table"
+	}
 }

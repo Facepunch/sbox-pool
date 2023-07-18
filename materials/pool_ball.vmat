@@ -1,29 +1,48 @@
-"Layer0"
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
 {
-	"shader"		"shaders/complex.shader"
-	"F_SPECULAR"		"1"
-	"g_flAmbientOcclusionDirectDiffuse"		"1.000000"
-	"g_flAmbientOcclusionDirectSpecular"		"1.000000"
-	"TextureAmbientOcclusion"		"[1.000000 1.000000 1.000000 0.000000]"
-	"g_flModelTintAmount"		"1.000000"
-	"g_vColorTint"		"[0.901961 0.901961 0.901961 0.000000]"
-	"TextureColor"		"[1.000000 1.000000 1.000000 0.000000]"
-	"g_flFadeExponent"		"1.000000"
-	"g_bFogEnabled"		"1"
-	"g_flDirectionalLightmapMinZ"		"0.500000"
-	"g_flDirectionalLightmapStrength"		"1.000000"
-	"g_flMetalness"		"0.156000"
-	"TextureNormal"		"[0.501961 0.501961 1.000000 0.000000]"
-	"TextureRoughness"		"[0.137255 0.137255 0.137255 0.000000]"
-	"g_nScaleTexCoordUByModelScaleAxis"		"0"
-	"g_nScaleTexCoordVByModelScaleAxis"		"0"
-	"g_vTexCoordOffset"		"[0.000 0.000]"
-	"g_vTexCoordScale"		"[1.000 1.000]"
-	"g_vTexCoordScrollSpeed"		"[0.000 0.000]"
-	"SystemAttributes"
+	shader "shaders/complex.shader"
+
+	//---- PBR ----
+	F_SPECULAR 1
+
+	//---- Ambient Occlusion ----
+	g_flAmbientOcclusionDirectDiffuse "1.000"
+	g_flAmbientOcclusionDirectSpecular "1.000"
+	TextureAmbientOcclusion "[1.000000 1.000000 1.000000 0.000000]"
+
+	//---- Color ----
+	g_flModelTintAmount "1.000"
+	g_vColorTint "[0.901961 0.901961 0.901961 0.000000]"
+	TextureColor "[1.000000 1.000000 1.000000 0.000000]"
+
+	//---- Fade ----
+	g_flFadeExponent "1.000"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Metalness ----
+	g_flMetalness "0.156"
+
+	//---- Normal ----
+	TextureNormal "[0.501961 0.501961 1.000000 0.000000]"
+
+	//---- Roughness ----
+	g_flRoughnessScaleFactor "1.000"
+	TextureRoughness "[0.137255 0.137255 0.137255 0.000000]"
+
+	//---- Texture Coordinates ----
+	g_nScaleTexCoordUByModelScaleAxis "0"
+	g_nScaleTexCoordVByModelScaleAxis "0"
+	g_vTexCoordOffset "[0.000 0.000]"
+	g_vTexCoordScale "[1.000 1.000]"
+	g_vTexCoordScrollSpeed "[0.000 0.000]"
+
+	SystemAttributes
 	{
-		"WorldMappingWidth"		"128"
-		"WorldMappingHeight"		"128"
-		"PhysicsSurfaceProperties"		"pool.table"
+		WorldMappingWidth "128"
+		WorldMappingHeight "128"
 	}
 }

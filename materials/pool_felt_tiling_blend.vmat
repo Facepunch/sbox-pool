@@ -6,16 +6,6 @@ Layer0
 
 	F_MULTIBLEND 1 // 2 Layers
 
-	g_flDirectionalLightmapMinZ "0.000"
-	g_flDirectionalLightmapStrength "0.000"
-
-	//---- Color ----
-	g_flModelTintAmount "1.000"
-	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
-
-	//---- Fade ----
-	g_flFadeExponent "1.000"
-
 	//---- Fog ----
 	g_bFogEnabled "1"
 
@@ -41,10 +31,8 @@ Layer0
 	TextureRoughnessB "textures/pool/fabric_worn_rough.tga"
 	TextureTintMaskB "materials/default/default.tga"
 
-	//---- Texture Coordinates ----
-	g_nScaleTexCoordUByModelScaleAxis "0"
-	g_nScaleTexCoordVByModelScaleAxis "0"
-	g_vTexCoordOffset "[0.000 0.000]"
-	g_vTexCoordScale "[1.000 1.000]"
-	g_vTexCoordScrollSpeed "[0.000 0.000]"
+	SystemAttributes
+	{
+		PhysicsSurfaceProperties "pool.table"
+	}
 }
