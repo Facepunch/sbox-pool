@@ -72,16 +72,16 @@
 
             @if ( Owner.IsMe )
             {
-                <a class="button @(Lobby.MemberCount < MinPlayersSupported ? "disabled" : "")" tooltip="Start the game for all players in the lobby" onclick=@StartGame>
+                <div class="button @(Lobby.MemberCount < MinPlayersSupported ? "disabled" : "")" tooltip="Start the game for all players in the lobby" onclick=@StartGame>
                     Start
                     <div class="underline"></div>
-                </a>
+                </div>
             }
         
-            <a class="button" onclick=@LeaveLobby>
+            <div class="button" onclick=@LeaveLobby>
                 Leave
                 <div class="underline"></div>
-            </a>
+            </div>
 
         </div> 
     }
