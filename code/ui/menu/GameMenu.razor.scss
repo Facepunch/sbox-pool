@@ -1,6 +1,7 @@
+@import "_controls.scss";
+
 GameMenu {
 	background-color: #343948;
-	padding: 0 170px;
 	opacity: 1;
 	flex-direction: column;
 	font-size: 25px;
@@ -9,13 +10,6 @@ GameMenu {
 	position: absolute;
 	transition: all 0.3s ease-out;
 	color: white;
-
-	.fullscreen-blur {
-		backdrop-filter: blur( 8px );
-		position: absolute;
-		width: 100%;
-		height: 100%;
-	}
 
 	&:not( .ingame ) {
 		background-image: url( "videos/menu2.webm" );
@@ -31,97 +25,6 @@ GameMenu {
 	&.ingame {
 		background-color: #151313ee;
 	}
-}
-
-.main-button
-{
-	cursor: pointer;
-	font-family: Poppins;
-	font-weight: 600;
-	font-size: 40px;
-	transition: all 0.2s ease-in-out;
-
-	.underline {
-		transition: all 0.2s ease-in;
-		background-color: red;
-		position: absolute;
-		width: 0%;
-		height: 4px;
-		top: 100%;
-	}
-}
-
-.main-button:active {
-	sound-in: "ball-pocket-1";
-}
-
-.main-button:hover {
-	sound-in: "ball-collide";
-	
-	.underline {
-		background-color: white;
-		transition: all 0.2s ease-in;
-		width: 100%;
-	}
-}
-
-.game-title {
-	font-family: Poppins;
-	text-shadow: 0px 0px 16px black;
-	font-weight: 700;
-	font-size: 64px;
-}
-
-.game-description {
-	text-align: center;
-	text-shadow: 0px 0px 16px black;
-	width: 600px;
-	font-family: Poppins;
-	font-size: 20px;
-}
-
-.controls {
-	flex-direction: column;
-	align-items: center;
-	margin-top: 64px;
-	gap: 16px;
-
-	.button {
-		border-radius: 8px;
-		padding: 16px;
-	}
-}
-
-.button, .block
-{
-	padding: 4px 16px;
-	opacity: 0.8;
-	font-size: 28px;
-	font-family: Poppins;
-	font-weight: 700;
-	flex-shrink: 0;
-}
-
-.button {
-	background-color: #000a;
-	border-radius: 8px;
-	cursor: pointer;
-
-	&:hover {
-		opacity: 1;
-	}
-
-	&:active {
-		left: 2px;
-		top: 3px;
-	}
-}
-
-GameMenu .navigator-canvas
-{
-	height: 100%;
-	flex-grow: 1;
-	flex-shrink: 0;
 }
 
 section
@@ -184,48 +87,6 @@ h2
 .inset
 {
 	overflow: hidden;
-}
-
-.layout
-{
-	flex-direction: column;
-
-	> *
-	{
-		flex-shrink: 0;
-	}
-
-	> .body
-	{
-		flex-grow: 1;
-		flex-shrink: 0;
-		flex-direction: column;
-
-		&.columned
-		{
-			flex-direction: row;
-			flex-grow: 1;
-			flex-shrink: 1;
-			
-			justify-content: space-around;
-			align-items: center;
-
-			> .left
-			{
-				flex-grow: 0;
-				flex-shrink: 0;
-				overflow-y: scroll;
-				flex-direction: column;
-			}
-
-			> .right
-			{
-				flex-grow: 0;
-				flex-shrink: 0;
-				flex-direction: column;
-			}
-		}
-	}
 }
 
 .navbar

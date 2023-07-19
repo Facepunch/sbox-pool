@@ -5,7 +5,7 @@
 @namespace Facepunch.Pool.Menu
 @attribute [StyleSheet]
 
-<root style="flex-direction: column;">
+<root class="layout">
 
     <div class="game-title">
         &#x1F3B1; @Game.Menu.Package.Title
@@ -19,23 +19,23 @@
 
         @if ( Game.InGame )
         {
-            <a class="main-button" href="/active">
+            <a class="button" href="/active">
                 Current Game
                 <div class="underline"></div>
             </a>
             
-            <a class="main-button" onclick=@LeaveGame>
+            <a class="button" onclick=@LeaveGame>
                 Leave Game
                 <div class="underline"></div>
             </a>
         }
         else
         {
-            <a class="main-button" href="/find">
+            <a class="button" href="/find">
                 Find Game
                 <div class="underline"></div>
             </a>
-            <a class="main-button" @onclick=@Game.Menu.Close>
+            <a class="button" @onclick=@Game.Menu.Close>
                 Quit
                 <div class="underline"></div>
             </a>
