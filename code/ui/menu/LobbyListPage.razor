@@ -65,7 +65,7 @@
 
         var me = new Friend( Game.SteamId );
         Game.Menu.Lobby.Title = $"{me.Name}'s Lobby";
-        Game.Menu.Lobby.Map = "facepunch.square";
+        Game.Menu.Lobby.Map = GameMenu.DefaultMap;
         this.Navigate( "/lobby/active" );
     }
 
