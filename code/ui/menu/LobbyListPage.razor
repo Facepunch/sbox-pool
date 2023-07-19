@@ -29,7 +29,7 @@
             {
                 <div class="lobby-button" onclick=@( () => JoinLobby( lobby ) )>
                     <img class="lobby-member" src="avatar:@lobby.Owner.Id" tooltip="@lobby.Owner.Name"></img>
-                    @(lobby.Owner.Name)'s Lobby
+                    <label>@(lobby.Owner.Name)'s Lobby</label>
                 </div>
             }
         </div> 
