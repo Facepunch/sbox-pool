@@ -31,10 +31,18 @@
         }
         else
         {
-            <a class="button" href="/find">
-                Find Game
+            <a class="button" tooltip="Find games or host a game of your own" href="/lobby/list">
+                Play
                 <div class="underline"></div>
             </a>
+            
+            /*
+            <a class="button" tooltip="Quickly find an opponent to play against" href="/matchmake">
+                Matchmaking
+                <div class="underline"></div>
+            </a>
+            */
+            
             <a class="button" @onclick=@Game.Menu.Close>
                 Quit
                 <div class="underline"></div>

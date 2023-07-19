@@ -1,0 +1,145 @@
+@using System
+@using Sandbox;
+@using System.Linq;
+@using System.Threading.Tasks
+@using Sandbox.Menu
+@using Sandbox.MenuSystem;
+@using Sandbox.UI;
+@using Sandbox.UI.GameMenu;
+@inherits Panel
+@attribute [StyleSheet]
+@namespace Facepunch.Pool.Menu
+
+<root class="layout">
+
+    <div class="game-title">
+        &#x1F3B1; @Game.Menu.Package.Title
+    </div>
+
+    @if ( Lobby == null )
+    {
+        <div class="game-description center">
+            <div class="spinner small"></div>
+            Loading...
+        </div>
+        
+        <div class="controls">
+        
+            <a class="button" onclick=@LeaveLobby>
+                Leave Lobby
+                <div class="underline"></div>
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="game-description">
+            @Lobby.Title
+        </div>
+        
+        <div class="lobby-members">
+            @foreach (var member in Lobby.Members)
+            {
+                <img class="lobby-member" src="avatar:@member.Id" tooltip="@member.Name" />
+            }
+        </div>
+        
+        <div class="lobby-setup">
+            @if ( Owner.IsMe )
+            {
+                <div class="lobby-form">
+                    @if ( GameMenu.AllowMaxPlayerSelection && ( MaxPlayersSupported > 1 && MaxPlayersSupported > MinPlayersSupported ) )
+                    {
+                        <div class="lobby-control">
+                            <label class="text">Maximum Players</label>
+                            <SliderControl ShowRange=@true Min=@(1f) Max=@MaxPlayersSupported Value:bind=@Game.Menu.Lobby.MaxMembers />
+                        </div>
+                    }
+
+                    @if ( GameMenu.AllowMapSelection )
+                    {
+                        <div class="lobby-control">
+                            <label class="text">Map</label>
+                            <SlimPackageCard OnLaunch=@OnMapClicked Package=@MapPackage />
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        
+        <div class="controls">
+
+            @if ( Owner.IsMe )
+            {
+                <a class="button @(Lobby.MemberCount < MinPlayersSupported ? "disabled" : "")" tooltip="Start the game for all players in the lobby" onclick=@StartGame>
+                    Start
+                    <div class="underline"></div>
+                </a>
+            }
+        
+            <a class="button" onclick=@LeaveLobby>
+                Leave
+                <div class="underline"></div>
+            </a>
+
+        </div> 
+    }
+
+</root>
+
+@code
+{
+    private Friend Owner => Lobby.Owner;
+    private ILobby Lobby => Game.Menu.Lobby;
+    private Package MapPackage { get; set; }
+    private int MinPlayersSupported { get; set; } = 1;
+    private int MaxPlayersSupported { get; set; } = 2;
+
+    protected override void OnAfterTreeRender(bool firstTime)
+    {
+        FetchPackage();
+        base.OnAfterTreeRender( firstTime );
+    }
+
+    protected override void OnParametersSet()
+    {
+        MinPlayersSupported = Game.Menu.Package.GetMeta( "MinPlayers", 2 );
+        MaxPlayersSupported = Game.Menu.Package.GetMeta( "MaxPlayers", 2 );
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine( MinPlayersSupported, MaxPlayersSupported, Lobby, Lobby?.MemberCount ?? 1 );
+    }
+
+    private void OnMapClicked()
+    {
+        var ident = Game.Menu.Package.FullIdent.Replace( "#local", "" );
+        Game.Overlay.ShowPackageSelector( $"type:map sort:popular game:{ident}", OnMapSelected );
+    }
+
+    private void OnMapSelected( Package map )
+    {
+        MapPackage = map;
+        Game.Menu.Lobby.Map = map.FullIdent;
+        StateHasChanged();
+    }
+    
+    private async Task StartGame()
+    {
+        if ( Lobby.MemberCount < MinPlayersSupported ) return;
+        await Game.Menu.StartServerAsync( Game.Menu.Lobby.MaxMembers, $"{Game.Menu.Lobby.Owner.Name}'s Game", Game.Menu.Lobby.Map );
+    }
+
+    private async void FetchPackage()
+    {
+        MapPackage = await Package.FetchAsync( Game.Menu.Lobby?.Map ?? "facepunch.square", true );
+    }
+    
+    private void LeaveLobby()
+    {
+        Lobby?.Leave();
+        this.Navigate( "/lobby/list" );
+    }
+}

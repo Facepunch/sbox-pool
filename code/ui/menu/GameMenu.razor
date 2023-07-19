@@ -14,13 +14,18 @@
 
 @code
 {
+    public static bool AllowMaxPlayerSelection => false;
+    public static bool AllowMapSelection => false;
+    
     public GameMenu()
     {
         DefaultUrl = "/";
 
         AddDestination("/", typeof(FrontPage));
         AddDestination("/active", typeof(CurrentGamePage));
-        AddDestination("/find", typeof(FindGamePage));
+        AddDestination("/lobby/list", typeof(LobbyListPage));
+        AddDestination("/lobby/active", typeof(ActiveLobbyPage));
+        AddDestination("/matchmake", typeof(MatchmakePage));
 
         if (Game.InGame) Navigate("/active");
 

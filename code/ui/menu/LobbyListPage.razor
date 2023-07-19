@@ -1,0 +1,97 @@
+@using System
+@using Sandbox;
+@using System.Linq;
+@using System.Threading.Tasks
+@using Sandbox.Menu
+@using Sandbox.MenuSystem;
+@using Sandbox.UI;
+@using Sandbox.UI.GameMenu;
+@inherits Panel
+@attribute [StyleSheet]
+@namespace Facepunch.Pool.Menu
+
+<root class="layout">
+
+    <div class="game-title">
+        &#x1F3B1; @Game.Menu.Package.Title
+    </div>
+    
+    @if ( !Game.Menu.Lobbies.Any() )
+    {
+        <div class="game-description">
+            There are no lobbies right now, refresh or start your own!
+        </div>
+    }
+    else
+    {
+        <div class="lobby-list scroll">
+            @foreach ( var lobby in Game.Menu.Lobbies )
+            {
+                <div class="lobby-button" onclick=@( () => JoinLobby( lobby ) )>
+                    <img class="lobby-member" src="avatar:@lobby.Owner.Id" tooltip="@lobby.Owner.Name"></img>
+                    @(lobby.Owner.Name)'s Lobby
+                </div>
+            }
+        </div> 
+    }
+    
+    <div class="controls">
+
+        <a class="button" onclick=@RefreshLobbies>
+            Refresh
+            <div class="underline"></div>
+        </a>
+    
+        <a class="button" onclick=@CreateLobbyAsync>
+            Create
+            <div class="underline"></div>
+        </a>
+        
+        <a class="button" href="/">
+            Go Back
+            <div class="underline"></div>
+        </a>
+
+    </div> 
+
+</root>
+
+@code
+{
+    private async void CreateLobbyAsync()
+    {
+        var maxMembers = Game.Menu.Package.GetMeta( "MaxPlayers", 2 );
+        await Game.Menu.CreateLobbyAsync( maxMembers, "game", true );
+
+        var me = new Friend( Game.SteamId );
+        Game.Menu.Lobby.Title = $"{me.Name}'s Lobby";
+        Game.Menu.Lobby.Map = "facepunch.square";
+        this.Navigate( "/lobby/active" );
+    }
+
+    private async void JoinLobby( ILobby lobby )
+    {
+        if ( lobby == null ) return;
+        
+        Game.Menu.Lobby?.Leave();
+
+        var success = await lobby.JoinAsync();
+
+        if ( success )
+            this.Navigate( "/lobby/active" );
+        else
+            RefreshLobbies();
+    }
+
+    private async void RefreshLobbies()
+    {
+        await Game.Menu.QueryLobbiesAsync( null, 1 );
+        StateHasChanged();
+        this.Navigate( "/lobby/list" );
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine( Game.Menu.Lobbies.Count() );
+    }
+}

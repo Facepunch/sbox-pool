@@ -21,19 +21,27 @@
         height: 4px;
         top: 100%;
     }
+    
+    &.disabled {
+        color: darken( white, 0.3 );
+    }
 }
 
 .button:active {
-    sound-in: "ball-pocket-1";
+    &:not( .disabled ) {
+        sound-in: "ball-pocket-1";
+    }
 }
 
 .button:hover {
-    sound-in: "ball-collide";
+    &:not( .disabled ) {
+        sound-in: "ball-collide";
 
-    .underline {
-        background-color: white;
-        transition: all 0.2s ease-in;
-        width: 100%;
+        .underline {
+            background-color: white;
+            transition: all 0.2s ease-in;
+            width: 100%;
+        }
     }
 }
 
@@ -107,6 +115,76 @@
                 flex-grow: 0;
                 flex-shrink: 0;
                 flex-direction: column;
+            }
+        }
+    }
+}
+
+.lobby-members {
+    justify-content: center;
+    margin-top: 32px;
+
+    > .lobby-member {
+        border-radius: 50%;
+    }
+}
+
+.lobby-list {
+    flex-direction: column;
+    margin-top: 64px;
+    gap: 8px;
+}
+
+.lobby-button {
+    background-color: rgba( 0 0 0 0.15 );
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    font-family: Poppins;
+    flex-direction: row;
+    font-size: 20px;
+    padding: 8px;
+    gap: 16px;
+    
+    > .lobby-member {
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.lobby-button:active {
+    sound-in: "ball-pocket-1";
+}
+
+.lobby-button:hover {
+    background-color: rgba( 0 0 0 0.3 );
+    sound-in: "ball-collide";
+}
+
+.lobby-setup {
+    flex-direction: column;
+    margin-top: 64px;
+    
+    > .lobby-form {
+        flex-direction: row;
+        gap: 64px;
+        
+        > .lobby-control {
+            flex-direction: column;
+            
+            SliderControl {
+                > .inner {
+                    > .values {
+                        color: darken( white, 0.2 );
+                    }
+                }
+            }
+            
+            > .text {
+                text-shadow: 0px 0px 16px black;
+                font-family: Poppins;
+                font-size: 20px;
             }
         }
     }

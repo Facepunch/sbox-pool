@@ -1,0 +1,40 @@
+﻿@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+
+@namespace Facepunch.Pool.Menu
+
+<root>
+    @if ( Package == null )
+    {
+        <div class="button" @onclick=@OnCardClicked>
+            Browse...
+            <div class="underline"></div>
+        </div>
+    }
+    else
+    {
+        <div class="button" @onclick=@OnCardClicked>
+            @Package.Title
+            <div class="underline"></div>
+        </div>
+        <i tooltip="See information about this package" @onclick=@( () => Game.Overlay.ShowPackageModal( Package.FullIdent ) )>info</i>
+    }
+</root>
+
+@code
+{
+    public Package Package { get; set; }
+    public Action OnLaunch { get; set; }
+
+    void OnCardClicked()
+    {
+        OnLaunch?.Invoke();
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine( Package );
+    }
+}
