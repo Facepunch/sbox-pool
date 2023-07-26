@@ -1,6 +1,8 @@
 ﻿using Sandbox;
 using System;
+using System.Data;
 using System.Linq;
+using Sandbox.Services;
 
 namespace Facepunch.Pool
 {
@@ -98,6 +100,31 @@ namespace Facepunch.Pool
 			}
 		}
 
+		[ClientRpc]
+		private void UpdateEloStatRpc( int value )
+		{
+			Stats.SetValue( Client, "elo", value );
+			Stats.FlushAsync();
+		}
+
+		[ClientRpc]
+		private void IncrementWinStatRpc()
+		{
+			Stats.Increment( Client, "wins", 1 );
+		}
+
+		public void UpdateEloStat( int value )
+		{
+			Game.AssertServer();
+			UpdateEloStatRpc( To.Single( Client ), value );
+		}
+
+		public void IncrementWinStat()
+		{
+			Game.AssertServer();
+			IncrementWinStatRpc( To.Single( Client ) );
+		}
+		
 		public void StartPlaying()
 		{
 			Elo.Initialize( Client );

@@ -124,13 +124,13 @@
         {
             if ( Lobby.MemberCount == Lobby.MaxMembers )
             {
-                Log.Info("Starting game...");
+                Log.Info( "Starting game..." );
                 Lobby.LaunchGameAsync();
                 Sound.FromScreen( "bonus" );
                 IsLoadingGame = true;
             }
         }
-        else if (Lobby.State == "active")
+        else if ( Lobby.State == "active" )
         {
             Log.Info("Joining game...");
             Lobby.LaunchGameAsync();
@@ -138,10 +138,10 @@
             IsLoadingGame = true;
         }
 
-        if (Lobby != null && (Lobby.MemberCount == Lobby.MaxMembers || Lobby.State == "loading"))
+        if ( Lobby != null && ( Lobby.MemberCount == Lobby.MaxMembers || Lobby.State == "loading" ) )
             return;
 
-        if (IsLoadingGame || !NextFindLobbies)
+        if ( IsLoadingGame || !NextFindLobbies )
             return;
         
         TryFindAvailableLobbies();

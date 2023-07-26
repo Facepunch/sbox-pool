@@ -31,23 +31,46 @@
 
 	protected override void OnParametersSet()
 	{
+		var realNextScore = Elo.GetNextLevelRating( Rating );
+		
 		PreviousScore = Math.Max( Rating - Delta, 0 );
-		NextScore = Elo.GetNextLevelRating( PreviousScore );
-		Progress = 100 - (NextScore - PreviousScore);
+
+		if ( realNextScore >= PreviousScore )
+		{
+			// Conna: we went down a rank.
+			NextScore = realNextScore;
+			Progress = 100 - (NextScore - Rating);
+			
+			Log.Info( $"Down Rank! Previous: {PreviousScore} Next: {NextScore} Progress: {Progress} Delta: {Delta}" );
+		}
+		else
+		{
+			NextScore = Elo.GetNextLevelRating( PreviousScore );
+
+			if ( Rating >= NextScore )
+			{
+				// Conna: we went up a rank.
+				Progress = 100 - (realNextScore - Rating);
+				Log.Info( $"Up Rank! Previous: {PreviousScore} Next: {NextScore} Progress: {Progress} Delta: {Delta}" );
+			}
+			else
+			{
+				Progress = 100 - (NextScore - PreviousScore);
+				Log.Info( $"Same Rank! Previous: {PreviousScore} Next: {NextScore} Progress: {Progress} Delta: {Delta}" );
+
+				if ( Delta < 0 )
+					Progress += Delta;
+			}
+		}
 
 		base.OnParametersSet();
 	}
 
 	protected override void OnAfterTreeRender( bool firstTime )
 	{
-		var progress = Progress;
-		var delta = Delta;
-
-		if ( delta < 0 ) progress += delta;
-
-		BarProgress.Style.Width = Length.Percent( progress );
-		BarDelta.Style.Width = Length.Percent( Math.Min( Math.Abs( delta ), 100 - progress ) );
-		BarDelta.SetClass( "loss", delta < 0 );
+		BarProgress.Style.Width = Length.Percent( Progress );
+		BarDelta.Style.Width = Length.Percent( Math.Min( Math.Abs( Delta ), 100 - Progress ) );
+		BarDelta.SetClass( "loss", Delta < 0 );
 
 		base.OnAfterTreeRender( firstTime );
 	}

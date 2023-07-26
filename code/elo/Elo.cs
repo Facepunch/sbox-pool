@@ -11,42 +11,34 @@ namespace Facepunch.Pool
 			return rating == roundedUp ? rating + 100 : roundedUp;
 		}
 
-		public static float GetWinChance( EloScore one, EloScore two )
-		{
-			return 1f / (1f + MathF.Pow( 10f, (two.Rating - one.Rating) / 400f ));
-		}
-
 		public static PlayerRank GetRank( int rating )
 		{
-			if ( rating < 1149 )
-				return PlayerRank.Bronze;
-			else if ( rating < 1499 )
-				return PlayerRank.Silver;
-			else if ( rating < 1849 )
-				return PlayerRank.Gold;
-			else if ( rating < 2199 )
-				return PlayerRank.Platinum;
-			else
-				return PlayerRank.Diamond;
+			return rating switch
+			{
+				< 1149 => PlayerRank.Bronze,
+				< 1499 => PlayerRank.Silver,
+				< 1849 => PlayerRank.Gold,
+				< 2199 => PlayerRank.Platinum,
+				_ => PlayerRank.Diamond
+			};
 		}
 
 		public static PlayerRank GetNextRank( int rating )
 		{
 			var rank = GetRank( rating );
 
-			if ( rank == PlayerRank.Bronze )
-				return PlayerRank.Silver;
-			else if ( rank == PlayerRank.Silver )
-				return PlayerRank.Gold;
-			else if ( rank == PlayerRank.Gold )
-				return PlayerRank.Platinum;
-			else
-				return PlayerRank.Diamond;
+			return rank switch
+			{
+				PlayerRank.Bronze => PlayerRank.Silver,
+				PlayerRank.Silver => PlayerRank.Gold,
+				PlayerRank.Gold => PlayerRank.Platinum,
+				_ => PlayerRank.Diamond
+			};
 		}
 
 		public static int GetLevel( int rating )
 		{
-			return rating / 100;
+			return (rating / 100) - 10;
 		}
 	}
 }

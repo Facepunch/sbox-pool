@@ -355,13 +355,17 @@ namespace Facepunch.Pool
 
 			PoolGame.Entity.AddToast( To.Everyone, winner, $"{ client.Name } has won the game", "wins" );
 
+			var playerOne = PoolGame.Entity.PlayerOne;
+			var playerTwo = PoolGame.Entity.PlayerTwo;
 			var loser = PoolGame.Entity.GetOtherPlayer( winner );
+			
+			EloScore.Update( playerOne.Elo, playerTwo.Elo, winner == playerOne ? EloOutcome.Win : EloOutcome.Loss );
 			
 			if ( PoolGame.Rules.IsRanked )
 			{
-				Stats.SetValue( winner.Client, "elo", winner.Elo.Rating );
-				Stats.SetValue( loser.Client, "elo", loser.Elo.Rating );
-				Stats.Increment( winner.Client, "wins", 1 );
+				winner.IncrementWinStat();
+				winner.UpdateEloStat( winner.Elo.Rating );
+				loser.UpdateEloStat( loser.Elo.Rating );
 			}
 
 			foreach ( var c in Entity.All.OfType<Player>() )
@@ -371,8 +375,6 @@ namespace Facepunch.Pool
 
 			PoolGame.Entity.PreviousWinner = winner;
 			PoolGame.Entity.PreviousLoser = loser;
-
-			EloScore.Update( winner.Elo, loser.Elo, EloOutcome.Win );
 
 			PoolGame.Entity.ShowWinSummary( To.Single( winner ), EloOutcome.Win, loser, winner.Elo.Rating, winner.Elo.Delta );
 			PoolGame.Entity.ShowWinSummary( To.Single( loser ), EloOutcome.Loss, winner, loser.Elo.Rating, loser.Elo.Delta );

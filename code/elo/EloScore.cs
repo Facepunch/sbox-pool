@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Sandbox;
 using System.Threading.Tasks;
 using Sandbox.Services;
@@ -16,13 +17,15 @@ namespace Facepunch.Pool
 		public static void Update( EloScore playerOne, EloScore playerTwo, EloOutcome outcome )
 		{
 			const int eloK = 32;
-			var delta = (int)(eloK * ((int)outcome - GetExpectationToWin( playerOne, playerTwo )));
-
+			var delta = (int)(eloK * ((double)outcome - GetExpectationToWin( playerOne, playerTwo )));
+			
 			playerOne.Delta = delta;
 			playerOne.Rating += delta;
+			playerOne.Rating = Math.Max( playerOne.Rating, 1000 );
 
 			playerTwo.Delta = -delta;
 			playerTwo.Rating -= delta;
+			playerOne.Rating = Math.Max( playerOne.Rating, 1000 );
 		}
 		
 		public static double GetExpectationToWin( EloScore playerOne, EloScore playerTwo )
@@ -48,9 +51,25 @@ namespace Facepunch.Pool
 			return Elo.GetLevel( Rating );
 		}
 
-		public void Initialize( IClient client )
+		public async void Initialize( IClient client )
 		{
+			var leaderboard = Leaderboards.Get( "elo" );
+			leaderboard.TargetSteamId = client.SteamId;
+			leaderboard.MaxEntries = 1;
+			await leaderboard.Refresh();
+
+			if ( leaderboard.TotalEntries == 0 )
+			{
+				Rating = 1000;
+				return;
+			}
 			
+			var entry = leaderboard.Entries.FirstOrDefault();
+
+			if ( entry.SteamId == client.SteamId )
+			{
+				Rating = Math.Max( (int)entry.Value, 1000 );
+			}
 		}
 	}
 }

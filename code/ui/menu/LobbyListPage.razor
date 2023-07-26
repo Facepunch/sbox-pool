@@ -16,21 +16,24 @@
         &#x1F3B1; @Game.Menu.Package.Title
     </div>
     
-    @if ( !Game.Menu.Lobbies.Any() )
+    @if ( Lobbies == null || Lobbies.Length == 0 )
     {
         <div class="game-description">
-            There are no lobbies right now, refresh or start your own!
+            There are no lobbies right now, but you can start your own!
         </div>
     }
     else
     {
         <div class="lobby-list scroll">
-            @foreach ( var lobby in Game.Menu.Lobbies )
+            @foreach ( var lobby in Lobbies )
             {
-                <div class="lobby-button" onclick=@( () => JoinLobby( lobby ) )>
-                    <img class="lobby-member" src="avatar:@lobby.Owner.Id" tooltip="@lobby.Owner.Name"></img>
-                    <label>@(lobby.Owner.Name)'s Lobby</label>
-                </div>
+                @if ( lobby.MemberCount == 1 && lobby.State == "ready" )
+                {
+                    <div class="lobby-button" onclick=@( () => JoinLobby( lobby ) )>
+                        <img class="lobby-member" src="avatar:@lobby.Owner.Id" tooltip="@lobby.Owner.Name"></img>
+                        <label>@(lobby.Owner.Name)'s Lobby</label>
+                    </div>
+                }
             }
         </div> 
     }
@@ -39,11 +42,6 @@
 
         <div class="button" onclick=@CreateLobbyAsync>
             Create
-            <div class="underline"></div>
-        </div>
-        
-        <div class="button" onclick=@RefreshLobbies>
-            Refresh
             <div class="underline"></div>
         </div>
         
@@ -58,6 +56,20 @@
 
 @code
 {
+    private RealTimeUntil NextLobbyRefresh { get; set; }
+    private ILobby[] Lobbies { get; set; }
+
+    public override void Tick()
+    {
+        if ( NextLobbyRefresh )
+        {
+            NextLobbyRefresh = 4f;
+            RefreshLobbies();
+        }
+        
+        base.Tick();
+    }
+
     private async void CreateLobbyAsync()
     {
         var maxMembers = Game.Menu.Package.GetMeta( "MaxPlayers", 2 );
@@ -85,12 +97,12 @@
 
     private async void RefreshLobbies()
     {
-        await Game.Menu.QueryLobbiesAsync( null, 1 );
+        Lobbies = await Game.Menu.QueryLobbiesAsync( "ready", 1 );
         StateHasChanged();
     }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine( Game.Menu.Lobbies.Count() );
+        return HashCode.Combine( RealTime.Delta );
     }
 }
