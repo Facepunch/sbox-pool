@@ -27,12 +27,12 @@
         <div class="lobby-list scroll">
             @foreach ( var lobby in Lobbies )
             {
-                @if ( lobby.MemberCount == 1 && lobby.State == "ready" )
+                if ( lobby.MemberCount == 1 && lobby.State == "open" )
                 {
                     <div class="lobby-button" onclick=@( () => JoinLobby( lobby ) )>
-                        <img class="lobby-member" src="avatar:@lobby.Owner.Id" tooltip="@lobby.Owner.Name"></img>
-                        <label>@(lobby.Owner.Name)'s Lobby</label>
-                    </div>
+                        <img class="lobby-member" src="avatar:@lobby.Id" tooltip="@lobby.Owner.Name"/>
+                        <label>@lobby.Title</label>
+                    </div>  
                 }
             }
         </div> 
@@ -78,6 +78,8 @@
         var me = new Friend( Game.SteamId );
         Game.Menu.Lobby.Title = $"{me.Name}'s Lobby";
         Game.Menu.Lobby.Map = GameMenu.DefaultMap;
+        
+        GameMenu.Lobby = Game.Menu.Lobby;
         this.Navigate( "/lobby/active" );
     }
 
@@ -85,19 +87,25 @@
     {
         if ( lobby == null ) return;
         
-        Game.Menu.Lobby?.Leave();
+        GameMenu.Lobby?.Leave();
+        GameMenu.Lobby = null;
 
         var success = await lobby.JoinAsync();
 
         if ( success )
+        {
+            GameMenu.Lobby = lobby;
             this.Navigate( "/lobby/active" );
+        }
         else
+        {
             RefreshLobbies();
+        }
     }
 
     private async void RefreshLobbies()
     {
-        Lobbies = await Game.Menu.QueryLobbiesAsync( "ready", 1 );
+        Lobbies = await Game.Menu.QueryLobbiesAsync( null, 1 );
         StateHasChanged();
     }
 

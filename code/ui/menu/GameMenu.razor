@@ -1,5 +1,6 @@
 @using System
 @using Sandbox;
+@using Sandbox.Menu
 @using Sandbox.MenuSystem;
 @using Sandbox.UI;
 @attribute [StyleSheet]
@@ -17,25 +18,26 @@
     public static bool AllowMaxPlayerSelection => false;
     public static bool AllowMapSelection => false;
     public static string DefaultMap => "pool_lounge_v2";
-    
+    public static ILobby Lobby { get; set; }
+
     public GameMenu()
     {
         DefaultUrl = "/";
 
-        AddDestination("/", typeof(FrontPage));
-        AddDestination("/active", typeof(CurrentGamePage));
-        AddDestination("/lobby/list", typeof(LobbyListPage));
-        AddDestination("/lobby/active", typeof(ActiveLobbyPage));
-        AddDestination("/matchmake", typeof(MatchmakePage));
+        AddDestination( "/", typeof(FrontPage) );
+        AddDestination( "/active", typeof(CurrentGamePage) );
+        AddDestination( "/lobby/list", typeof(LobbyListPage) );
+        AddDestination( "/lobby/active", typeof(ActiveLobbyPage) );
+        AddDestination( "/matchmake", typeof(MatchmakePage) );
 
-        if (Game.InGame) Navigate("/active");
+        if ( Game.InGame ) Navigate( "/active" );
 
         BindClass( "ingame", () => Game.InGame );
 
         Sound.FromScreen( "busy-bar" );
     }
 
-    protected override void OnEvent( PanelEvent e )
+    protected override void OnEvent(PanelEvent e)
     {
         if ( e.Name == "package.changed" )
         {
@@ -48,14 +50,18 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Game.InGame);
+        return HashCode.Combine( Game.InGame );
     }
 
     [GameEvent.Menu.ServerJoined]
-    public void OnServerJoined() => Navigate("/active");
+    public void OnServerJoined() => Navigate( "/active" );
 
     [GameEvent.Menu.LobbyLeave]
-    public void OnLobbyLeave() => Navigate("/");
+    public void OnLobbyLeave() 
+    {
+        Lobby = null;
+        Navigate( "/" );
+    }
 
     [GameEvent.Menu.ServerLeave]
     public void OnServerLeave() => Navigate("/");

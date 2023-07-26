@@ -91,7 +91,7 @@
 @code
 {
     private Friend Owner => Lobby.Owner;
-    private ILobby Lobby => Game.Menu.Lobby;
+    private ILobby Lobby => GameMenu.Lobby;
     private Package MapPackage { get; set; }
     private int MinPlayersSupported { get; set; } = 1;
     private int MaxPlayersSupported { get; set; } = 2;
@@ -129,7 +129,7 @@
     private async Task StartGame()
     {
         if ( Lobby.MemberCount < MinPlayersSupported ) return;
-        await Game.Menu.StartServerAsync( Game.Menu.Lobby.MaxMembers, $"{Game.Menu.Lobby.Owner.Name}'s Game", Game.Menu.Lobby.Map );
+        Lobby.LaunchGameAsync();
     }
 
     private async void FetchPackage()
@@ -139,7 +139,9 @@
     
     private void LeaveLobby()
     {
-        Lobby?.Leave();
+        GameMenu.Lobby?.Leave();
+        GameMenu.Lobby = null;
+        
         this.Navigate( "/lobby/list" );
     }
 }
